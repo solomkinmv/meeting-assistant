@@ -1,12 +1,12 @@
 package in.solomk.meeting.assistant.repository;
 
 import in.solomk.meeting.assistant.repository.model.Meeting;
-
-import java.util.Optional;
+import reactor.core.publisher.Mono;
 
 public interface MeetingRepository {
 
-    Meeting saveMeeting(Meeting meeting);
-    Optional<Meeting> getMeetingById(String id);
+    Mono<Meeting> saveMeeting(Meeting meeting);
+
+    Mono<Meeting> getMeetingById(String id);
 
 }
