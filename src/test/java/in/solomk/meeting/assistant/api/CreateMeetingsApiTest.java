@@ -9,13 +9,11 @@ public class CreateMeetingsApiTest extends BaseFuncTest {
 
     @Test
     void createsMeeting() {
-        webTestClient.post()
-                     .uri("/meetings/")
-                     .exchange()
-                     .expectStatus()
-                     .isOk()
-                     .expectBody()
-                     .jsonPath("$.id").value(not(blankOrNullString()));
+        testClient.createMeeting()
+                  .expectStatus()
+                  .isOk()
+                  .expectBody()
+                  .jsonPath("$.id").value(not(blankOrNullString()));
 
     }
 }

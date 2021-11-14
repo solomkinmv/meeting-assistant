@@ -1,4 +1,4 @@
-package in.solomk.meeting.assistant.handler;
+package in.solomk.meeting.assistant.api.handler;
 
 import in.solomk.meeting.assistant.repository.model.Meeting;
 import in.solomk.meeting.assistant.service.MeetingService;

@@ -4,13 +4,11 @@ import org.junit.jupiter.api.Test;
 
 public class GetMeetingsApiTest extends BaseFuncTest {
 
-    private static final int MEETING_ID = 123;
+    private static final String MEETING_ID = "123";
 
     @Test
     void returnsMeetingResponse() {
-        webTestClient.get()
-                     .uri("/meetings/{id}", MEETING_ID)
-                     .exchange()
+        testClient.getMeeting(MEETING_ID)
                      .expectStatus()
                      .isOk()
                      .expectBody()
