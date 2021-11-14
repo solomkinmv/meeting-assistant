@@ -1,12 +1,12 @@
 package in.solomk.meeting.assistant.repository;
 
-import in.solomk.meeting.assistant.repository.model.Meeting;
+import in.solomk.meeting.assistant.repository.model.MeetingEntity;
 import reactor.core.publisher.Mono;
 
 public interface MeetingRepository {
 
-    Mono<Meeting> saveMeeting(Meeting meeting);
+    Mono<MeetingEntity> saveMeeting(MeetingEntity meeting);
 
-    Mono<Meeting> getMeetingById(String id);
+    Mono<MeetingEntity> getMeetingById(String id);
 
 }

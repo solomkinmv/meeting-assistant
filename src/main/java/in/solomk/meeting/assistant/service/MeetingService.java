@@ -2,8 +2,8 @@ package in.solomk.meeting.assistant.service;
 
 import in.solomk.meeting.assistant.exception.PersistenceException;
 import in.solomk.meeting.assistant.repository.MeetingRepository;
-import in.solomk.meeting.assistant.repository.model.Interval;
-import in.solomk.meeting.assistant.repository.model.Meeting;
+import in.solomk.meeting.assistant.repository.model.IntervalEntity;
+import in.solomk.meeting.assistant.repository.model.MeetingEntity;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -17,11 +17,11 @@ public class MeetingService {
     private final MeetingIdGenerator idGenerator;
     private final MeetingRepository repository;
 
-    public Mono<Meeting> create() {
-        return repository.saveMeeting(Meeting.empty(idGenerator.generateId()));
+    public Mono<MeetingEntity> create() {
+        return repository.saveMeeting(MeetingEntity.empty(idGenerator.generateId()));
     }
 
-    public Mono<Meeting> setIntervalsForUser(String meetingId, String username, List<Interval> intervals) {
+    public Mono<MeetingEntity> setIntervalsForUser(String meetingId, String username, List<IntervalEntity> intervals) {
         return repository.getMeetingById(meetingId) // todo: make atomic
                          .map(meeting -> meeting.withUserIntervals(username, intervals))
                          .flatMap(repository::saveMeeting)

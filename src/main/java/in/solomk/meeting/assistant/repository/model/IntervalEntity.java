@@ -1,4 +1,4 @@
 package in.solomk.meeting.assistant.repository.model;
 
-public record Interval(long from, long to) {
+public record IntervalEntity(long from, long to) {
 }
