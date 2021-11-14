@@ -1,6 +1,6 @@
 package in.solomk.meeting.assistant.api.handler;
 
-import in.solomk.meeting.assistant.repository.model.MeetingEntity;
+import in.solomk.meeting.assistant.repository.entity.MeetingEntity;
 import in.solomk.meeting.assistant.service.MeetingService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

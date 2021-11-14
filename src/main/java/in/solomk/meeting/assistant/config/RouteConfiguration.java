@@ -20,7 +20,7 @@ public class RouteConfiguration {
         return RouterFunctions.route()
                               .GET("/meetings/{id}", serverRequest -> ServerResponse.ok()
                                                                                     .contentType(APPLICATION_JSON)
-                                                                                    .bodyValue(new MeetingResponse(serverRequest.pathVariable("id"), null)))
+                                                                                    .bodyValue(new MeetingResponse(serverRequest.pathVariable("id"), null, null)))
                               .POST("/meetings/", createMeetingHandler)
                               .PUT("/meetings/{id}/intervals/{username}", updateIntervalsHandler)
                               .build();

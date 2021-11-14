@@ -13,6 +13,6 @@ public class GetMeetingsApiTest extends BaseFuncTest {
                   .expectStatus()
                   .isOk()
                   .expectBody(MeetingResponse.class)
-                  .isEqualTo(new MeetingResponse(MEETING_ID, null));
+                  .isEqualTo(new MeetingResponse(MEETING_ID, null, null));
     }
 }

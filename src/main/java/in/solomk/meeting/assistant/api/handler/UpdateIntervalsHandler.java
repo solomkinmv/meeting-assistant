@@ -3,8 +3,8 @@ package in.solomk.meeting.assistant.api.handler;
 import in.solomk.meeting.assistant.api.dto.request.BatchIntervalsRequest;
 import in.solomk.meeting.assistant.api.dto.request.IntervalRequest;
 import in.solomk.meeting.assistant.api.validation.IntersectionValidator;
-import in.solomk.meeting.assistant.repository.model.MeetingEntity;
 import in.solomk.meeting.assistant.service.MeetingService;
+import in.solomk.meeting.assistant.service.model.Meeting;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.HandlerFunction;
@@ -35,7 +35,7 @@ public class UpdateIntervalsHandler implements HandlerFunction<ServerResponse> {
                                                    request.pathVariable("id"),
                                                    request.pathVariable("username"),
                                                    mapToList(batchRequest.intervals(), IntervalRequest::toModel))),
-                                   MeetingEntity.class);
+                                   Meeting.class);
     }
 
     private Mono<BatchIntervalsRequest> extractSortedRequestBody(ServerRequest request) {

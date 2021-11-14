@@ -1,10 +1,10 @@
 package in.solomk.meeting.assistant.api.dto.request;
 
-import in.solomk.meeting.assistant.repository.model.IntervalEntity;
+import in.solomk.meeting.assistant.service.model.Interval;
 
 public record IntervalRequest(long from, long to) {
 
-    public IntervalEntity toModel() {
-        return new IntervalEntity(from, to);
+    public Interval toModel() {
+        return new Interval(from, to);
     }
 }

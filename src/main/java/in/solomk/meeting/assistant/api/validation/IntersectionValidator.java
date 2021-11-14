@@ -1,12 +1,9 @@
 package in.solomk.meeting.assistant.api.validation;
 
 import in.solomk.meeting.assistant.api.dto.request.BatchIntervalsRequest;
-import in.solomk.meeting.assistant.api.dto.request.IntervalRequest;
 import in.solomk.meeting.assistant.exception.ValidationException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @Component
 public class IntersectionValidator {
