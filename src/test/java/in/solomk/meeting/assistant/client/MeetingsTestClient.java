@@ -1,12 +1,15 @@
 package in.solomk.meeting.assistant.client;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import in.solomk.meeting.assistant.api.dto.request.BatchIntervalsRequest;
 import in.solomk.meeting.assistant.api.dto.request.IntervalRequest;
 import in.solomk.meeting.assistant.api.dto.response.MeetingResponse;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 
 import java.util.List;
 
@@ -15,8 +18,16 @@ public class MeetingsTestClient {
 
     private final WebTestClient webTestClient;
 
-    public MeetingsTestClient(ApplicationContext context) {
-        webTestClient = WebTestClient.bindToApplicationContext(context).build();
+    public MeetingsTestClient(ApplicationContext context, ObjectMapper mapper) {
+        var exchangeStrategiesWithCustomObjectMapper =
+                ExchangeStrategies.builder()
+                                  .codecs(configurer -> configurer.defaultCodecs()
+                                                                  .jackson2JsonDecoder(new Jackson2JsonDecoder(mapper)))
+                                  .build();
+        webTestClient = WebTestClient.bindToApplicationContext(context)
+                                     .configureClient()
+                                     .exchangeStrategies(exchangeStrategiesWithCustomObjectMapper)
+                                     .build();
     }
 
     public WebTestClient.ResponseSpec createMeeting() {

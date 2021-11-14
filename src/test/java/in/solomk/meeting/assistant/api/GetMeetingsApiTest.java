@@ -1,5 +1,6 @@
 package in.solomk.meeting.assistant.api;
 
+import in.solomk.meeting.assistant.api.dto.response.MeetingResponse;
 import org.junit.jupiter.api.Test;
 
 public class GetMeetingsApiTest extends BaseFuncTest {
@@ -9,9 +10,9 @@ public class GetMeetingsApiTest extends BaseFuncTest {
     @Test
     void returnsMeetingResponse() {
         testClient.getMeeting(MEETING_ID)
-                     .expectStatus()
-                     .isOk()
-                     .expectBody()
-                     .jsonPath("$.id").isEqualTo(MEETING_ID);
+                  .expectStatus()
+                  .isOk()
+                  .expectBody(MeetingResponse.class)
+                  .isEqualTo(new MeetingResponse(MEETING_ID, null));
     }
 }

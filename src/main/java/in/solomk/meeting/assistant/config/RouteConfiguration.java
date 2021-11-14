@@ -9,7 +9,6 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import static java.util.Collections.emptyMap;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Configuration
@@ -21,7 +20,7 @@ public class RouteConfiguration {
         return RouterFunctions.route()
                               .GET("/meetings/{id}", serverRequest -> ServerResponse.ok()
                                                                                     .contentType(APPLICATION_JSON)
-                                                                                    .bodyValue(new MeetingResponse(serverRequest.pathVariable("id"), emptyMap())))
+                                                                                    .bodyValue(new MeetingResponse(serverRequest.pathVariable("id"), null)))
                               .POST("/meetings/", createMeetingHandler)
                               .PUT("/meetings/{id}/intervals/{username}", updateIntervalsHandler)
                               .build();
