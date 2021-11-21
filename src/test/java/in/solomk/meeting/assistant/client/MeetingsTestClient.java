@@ -30,6 +30,12 @@ public class MeetingsTestClient {
                                      .build();
     }
 
+    public WebTestClient.ResponseSpec getIndexPage() {
+        return webTestClient.get()
+                            .uri("/index.html")
+                            .exchange();
+    }
+
     public WebTestClient.ResponseSpec createMeeting() {
         return webTestClient.post()
                             .uri("/meetings/")
