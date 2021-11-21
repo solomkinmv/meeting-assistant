@@ -1,7 +1,6 @@
 package in.solomk.meeting.assistant.service;
 
 import in.solomk.meeting.assistant.service.model.Interval;
-import in.solomk.meeting.assistant.service.model.IntervalsGroup;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -13,12 +12,12 @@ import static java.util.Collections.emptyList;
 @Component
 public class IntersectionsService {
 
-    public List<Interval> findIntersections(List<IntervalsGroup> intervalGroups) {
+    public List<Interval> findIntersections(List<List<Interval>> intervalGroups) {
         if (intervalGroups.size() < 2) return emptyList();
 
-        List<Interval> intervals = intervalGroups.get(0).intervals();
+        List<Interval> intervals = intervalGroups.get(0);
         for (int i = 1; i < intervalGroups.size(); i++) {
-            var otherIntervals = intervalGroups.get(i).intervals();
+            var otherIntervals = intervalGroups.get(i);
             List<Interval> resultIntervals = new ArrayList<>();
             int idx1 = 0, idx2 = 0;
             while (idx1 < intervals.size() && idx2 < otherIntervals.size()) {

@@ -80,11 +80,10 @@ public class UpdateMeetingsApiTest extends BaseFuncTest {
                                                           Map.of(USER_1, List.of(intervalRes(100, 200),
                                                                                  intervalRes(300, 400)),
                                                                  USER_2, List.of(intervalRes(150, 250))),
-                                                          emptyList());
+                                                          List.of(intervalRes(150, 200)));
 
         testClient.setIntervalsForUser(meetingId, USER_1, List.of(intervalReq(100, 200), intervalReq(300, 400)));
-        testClient.setIntervalsForUser(meetingId,
-                                       USER_2, List.of(intervalReq(150, 250)))
+        testClient.setIntervalsForUser(meetingId, USER_2, List.of(intervalReq(150, 250)))
                   .expectStatus()
                   .isOk()
                   .expectBody(MeetingResponse.class)
@@ -93,7 +92,7 @@ public class UpdateMeetingsApiTest extends BaseFuncTest {
     }
 
     private String createMeeting() {
-        return Objects.requireNonNull(testClient.createMeetingAndGetEntity().getResponseBody()).id();
+        return Objects.requireNonNull(testClient.createMeetingAndReturnEntity().getResponseBody()).id();
     }
 
     private IntervalRequest intervalReq(int from, int to) {

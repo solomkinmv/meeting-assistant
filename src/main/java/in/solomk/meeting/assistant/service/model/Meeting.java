@@ -22,4 +22,8 @@ public record Meeting(String id, Map<String, List<Interval>> userIntervals, List
         copyUserIntervals.put(username, intervals);
         return new Meeting(id, copyUserIntervals, emptyList());
     }
+
+    public Meeting withIntersections(List<Interval> intersections) {
+        return new Meeting(id, userIntervals, intersections);
+    }
 }
