@@ -36,7 +36,7 @@ public class MeetingsTestClient {
                             .exchange();
     }
 
-    public EntityExchangeResult<MeetingResponse> createMeetingAndGetEntity() {
+    public EntityExchangeResult<MeetingResponse> createMeetingAndReturnEntity() {
         return createMeeting()
                 .expectBody(MeetingResponse.class)
                 .returnResult();
@@ -46,6 +46,12 @@ public class MeetingsTestClient {
         return webTestClient.get()
                             .uri("/meetings/{id}", meetingId)
                             .exchange();
+    }
+
+    public EntityExchangeResult<MeetingResponse> getMeetingAndReturnEntity(String meetingId) {
+        return getMeeting(meetingId)
+                .expectBody(MeetingResponse.class)
+                .returnResult();
     }
 
     public WebTestClient.ResponseSpec setIntervalsForUser(String meetingId, String username, List<IntervalRequest> intervals) {

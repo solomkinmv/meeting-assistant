@@ -15,6 +15,12 @@ public class MeetingService {
 
     private final MeetingIdGenerator idGenerator;
     private final MeetingRepository repository;
+    private final IntersectionEnricher intersectionEnricher;
+
+    public Mono<Meeting> get(String id) {
+        return repository.getMeetingById(id)
+                         .map(intersectionEnricher::withIntersectionDetails);
+    }
 
     public Mono<Meeting> create() {
         return repository.saveMeeting(Meeting.empty(idGenerator.generateId()));
@@ -24,6 +30,7 @@ public class MeetingService {
         return repository.getMeetingById(meetingId) // todo: make atomic
                          .map(meeting -> meeting.withUserIntervals(username, intervals))
                          .flatMap(repository::saveMeeting)
+                         .map(intersectionEnricher::withIntersectionDetails)
                          .switchIfEmpty(Mono.error(new PersistenceException("Meeting %s is missing in the database", meetingId)));
     }
 }

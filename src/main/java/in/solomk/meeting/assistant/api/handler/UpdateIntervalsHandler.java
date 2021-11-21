@@ -2,6 +2,7 @@ package in.solomk.meeting.assistant.api.handler;
 
 import in.solomk.meeting.assistant.api.dto.request.BatchIntervalsRequest;
 import in.solomk.meeting.assistant.api.dto.request.IntervalRequest;
+import in.solomk.meeting.assistant.api.dto.response.MeetingResponse;
 import in.solomk.meeting.assistant.api.validation.IntersectionValidator;
 import in.solomk.meeting.assistant.service.MeetingService;
 import in.solomk.meeting.assistant.service.model.Meeting;
@@ -34,8 +35,9 @@ public class UpdateIntervalsHandler implements HandlerFunction<ServerResponse> {
                                            .flatMap(batchRequest -> meetingService.setIntervalsForUser(
                                                    request.pathVariable("id"),
                                                    request.pathVariable("username"),
-                                                   mapToList(batchRequest.intervals(), IntervalRequest::toModel))),
-                                   Meeting.class);
+                                                   mapToList(batchRequest.intervals(), IntervalRequest::toModel)))
+                                           .map(MeetingResponse::valueOf),
+                                   MeetingResponse.class);
     }
 
     private Mono<BatchIntervalsRequest> extractSortedRequestBody(ServerRequest request) {
