@@ -1,14 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-
-    <!--    <link rel="stylesheet" type="text/css" href="tui/tui-calendar.css" />-->
-
-    <!-- If you use the default popups, use this. -->
-    <!--    <link rel="stylesheet" type="text/css" href="tui/tui-date-picker.css" />-->
-    <!--    <link rel="stylesheet" type="text/css" href="tui/tui-time-picker.css" />-->
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>TOAST UI Calendar App DEMO</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="./css/tui/tui-time-picker.css">
     <link rel="stylesheet" type="text/css" href="./css/tui/tui-date-picker.css">
@@ -17,18 +11,37 @@
     <link rel="stylesheet" type="text/css" href="./css/icons.css">
 </head>
 <body>
-<div>
-    <input id="name" placeholder="username" type="text"/>
-    <div id="intervals">Intervals will be here</div>
-    <div id="intersections"></div>
-    <input id="intervalFrom" placeholder="04 October 2011 14:48 UTC" size="25"/>
-    <input id="intervalTo" placeholder="04 October 2011 18:48 UTC+3" size="25"/>
-    <button id="addInterval">Add interval</button>
-
+<div id="top">
+    <a href="https://github.com/nhn/tui.calendar">
+        <img src="./images/img-bi.png" srcset="./images/img-bi@2x.png 2x,./images/img-bi@3x.png 3x">
+    </a>
+</div>
+<div id="lnb">
+    <div class="lnb-new-schedule">
+        <button id="btn-new-schedule" type="button" class="btn btn-default btn-block lnb-new-schedule-btn" data-toggle="modal">
+            New schedule</button>
+    </div>
+    <div id="lnb-calendars" class="lnb-calendars">
+        <div>
+            <div class="lnb-calendars-item">
+                <label>
+                    <input class="tui-full-calendar-checkbox-square" type="checkbox" value="all" checked>
+                    <span></span>
+                    <strong>View all</strong>
+                </label>
+            </div>
+        </div>
+        <div id="calendarList" class="lnb-calendars-d1">
+        </div>
+    </div>
+    <div class="lnb-footer">
+        © NHN Corp.
+    </div>
+</div>
+<div id="right">
     <div id="menu">
             <span class="dropdown">
-                <button id="dropdownMenu-calendarType" class="btn btn-default btn-sm dropdown-toggle" type="button"
-                        data-toggle="dropdown"
+                <button id="dropdownMenu-calendarType" class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="true">
                     <i id="calendarTypeIcon" class="calendar-icon ic_view_month" style="margin-right: 4px;"></i>
                     <span id="calendarTypeName">Dropdown</span>&nbsp;
@@ -63,8 +76,7 @@
                     <li role="presentation" class="dropdown-divider"></li>
                     <li role="presentation">
                         <a role="menuitem" data-action="toggle-workweek">
-                            <input type="checkbox" class="tui-full-calendar-checkbox-square" value="toggle-workweek"
-                                   checked>
+                            <input type="checkbox" class="tui-full-calendar-checkbox-square" value="toggle-workweek" checked>
                             <span class="checkbox-title"></span>Show weekends
                         </a>
                     </li>
@@ -76,8 +88,7 @@
                     </li>
                     <li role="presentation">
                         <a role="menuitem" data-action="toggle-narrow-weekend">
-                            <input type="checkbox" class="tui-full-calendar-checkbox-square"
-                                   value="toggle-narrow-weekend">
+                            <input type="checkbox" class="tui-full-calendar-checkbox-square" value="toggle-narrow-weekend">
                             <span class="checkbox-title"></span>Narrower than weekdays
                         </a>
                     </li>
@@ -96,12 +107,8 @@
     </div>
     <div id="calendar"></div>
 </div>
-</body>
 
-<!--<script src="tui/tui-date-picker.js" type="text/javascript"></script>-->
-<!--<script src="tui/tui-time-picker.js" type="text/javascript"></script>-->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 <script src="https://uicdn.toast.com/tui.code-snippet/v1.5.2/tui-code-snippet.min.js"></script>
@@ -113,5 +120,6 @@
 <script src="./js/data/calendars.js"></script>
 <script src="./js/data/schedules.js"></script>
 <script src="./js/theme/dooray.js"></script>
-<script src="meeting-assistant.js" type="text/javascript"></script>
+<script src="./js/app.js"></script>
+</body>
 </html>
