@@ -169,22 +169,11 @@ meetingClient.createMeeting().then(id => meetingId = id);
         console.log(target);
         console.log(action);
         switch (action) {
-            case 'toggle-daily':
-                viewName = 'day';
-                break;
             case 'toggle-weekly':
                 viewName = 'week';
                 break;
             case 'toggle-monthly':
                 options.month.visibleWeeksCount = 0;
-                viewName = 'month';
-                break;
-            case 'toggle-weeks2':
-                options.month.visibleWeeksCount = 2;
-                viewName = 'month';
-                break;
-            case 'toggle-weeks3':
-                options.month.visibleWeeksCount = 3;
                 viewName = 'month';
                 break;
             case 'toggle-narrow-weekend':
@@ -200,13 +189,6 @@ meetingClient.createMeeting().then(id => meetingId = id);
                 viewName = cal.getViewName();
 
                 target.querySelector('input').checked = options.month.startDayOfWeek;
-                break;
-            case 'toggle-workweek':
-                options.month.workweek = !options.month.workweek;
-                options.week.workweek = !options.week.workweek;
-                viewName = cal.getViewName();
-
-                target.querySelector('input').checked = !options.month.workweek;
                 break;
             default:
                 break;
@@ -243,21 +225,11 @@ meetingClient.createMeeting().then(id => meetingId = id);
     function setDropdownCalendarType() {
         var calendarTypeName = document.getElementById('calendarTypeName');
         var calendarTypeIcon = document.getElementById('calendarTypeIcon');
-        var options = cal.getOptions();
         var type = cal.getViewName();
         var iconClassName;
 
-        if (type === 'day') {
-            type = 'Daily';
-            iconClassName = 'calendar-icon ic_view_day';
-        } else if (type === 'week') {
+        if (type === 'week') {
             type = 'Weekly';
-            iconClassName = 'calendar-icon ic_view_week';
-        } else if (options.month.visibleWeeksCount === 2) {
-            type = '2 weeks';
-            iconClassName = 'calendar-icon ic_view_week';
-        } else if (options.month.visibleWeeksCount === 3) {
-            type = '3 weeks';
             iconClassName = 'calendar-icon ic_view_week';
         } else {
             type = 'Monthly';
@@ -280,10 +252,7 @@ meetingClient.createMeeting().then(id => meetingId = id);
         var viewName = cal.getViewName();
 
         var html = [];
-        if (viewName === 'day') {
-            html.push(currentCalendarDate('YYYY.MM.DD'));
-        } else if (viewName === 'month' &&
-            (!options.month.visibleWeeksCount || options.month.visibleWeeksCount > 4)) {
+        if (viewName === 'month') {
             html.push(currentCalendarDate('YYYY.MM'));
         } else {
             html.push(moment(cal.getDateRangeStart().getTime()).format('YYYY.MM.DD'));
