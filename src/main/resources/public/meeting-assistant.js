@@ -176,13 +176,6 @@ meetingClient.createMeeting().then(id => meetingId = id);
                 options.month.visibleWeeksCount = 0;
                 viewName = 'month';
                 break;
-            case 'toggle-narrow-weekend':
-                options.month.narrowWeekend = !options.month.narrowWeekend;
-                options.week.narrowWeekend = !options.week.narrowWeekend;
-                viewName = cal.getViewName();
-
-                target.querySelector('input').checked = options.month.narrowWeekend;
-                break;
             case 'toggle-start-day-1':
                 options.month.startDayOfWeek = options.month.startDayOfWeek ? 0 : 1;
                 options.week.startDayOfWeek = options.week.startDayOfWeek ? 0 : 1;
