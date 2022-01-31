@@ -244,6 +244,6 @@ body {
 }
 
 /* custom */
-.tui-full-calendar-popup-section > .tui-full-calendar-section-location {
-    /*display: none;*/
+.custom-section-location, .custom-section-menu, .custom-section-busy, .custom-section-title {
+    display: none;
 }

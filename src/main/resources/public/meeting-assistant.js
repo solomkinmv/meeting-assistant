@@ -7,63 +7,41 @@ const intervalsBlock = document.getElementById('intervals')
 let meetingId;
 let userIntervals = {};
 
+const meetingClient = new MeetingClient();
+
 function parseInput(dateString) {
     return new Date(dateString).getTime();
 }
 
 async function addInterval(ev) {
-    const username = inputUsername.value;
     const from = parseInput(inputIntervalFrom.value);
     const to = parseInput(inputIntervalTo.value);
+    return addParsedInterval(from, to);
+}
+
+async function addParsedInterval(from, to) {
     const newInterval = new Interval(from, to);
+    const username = inputUsername.value;
 
     const intervals = userIntervals[username] || [];
     intervals.push(newInterval);
     userIntervals[username] = intervals;
     console.log("User intervals: ", userIntervals);
 
-    console.log(`Updating user intervals with following path "/meetings/${meetingId}/intervals/${username}"`, intervals);
-    const jsonBody = JSON.stringify({intervals: intervals});
-    console.log("Update intervals body: " + jsonBody);
-    const response = await fetch(`/meetings/${meetingId}/intervals/${username}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: jsonBody
-    });
-    const data = await response.json();
-    console.log('Received response on update of intervals', data);
+    const data = meetingClient.addInterval(meetingId, username, intervals);
     intervalsBlock.innerText = JSON.stringify(data);
     return data;
 }
 
 button.onclick = addInterval;
 
-async function createMeeting() {
-    const response = await fetch('/meetings/', {
-        method: 'POST'
-    });
-    let data = await response.json();
-    console.log('Received response after meeting creation', data);
-    intervalsBlock.innerText = JSON.stringify(data);
-    return data['id'];
-}
-
-createMeeting().then(id => meetingId = id);
-
-class Interval {
-    constructor(from, to) {
-        this.from = from;
-        this.to = to;
-    }
-}
+meetingClient.createMeeting().then(id => meetingId = id);
 
 (function(window, Calendar) {
     var cal = new Calendar('#calendar', {
         defaultView: 'week',
         taskView: true,
-        useCreationPopup: false,
+        useCreationPopup: true,
         useDetailPopup: true,
         template: {
             monthDayname: function(dayname) {
@@ -80,22 +58,10 @@ class Interval {
         }
     });
 
-    cal.on('beforeCreateSchedule', function(e) {
+    cal.on('beforeCreateSchedule', async function (e) {
         console.log('beforeCreateSchedule', e);
-        /* step1. open custom edit popup */
-        const title = prompt('Schedule', '@suvrity\'s birthday');
-        var schedule = {
-            id: +new Date(),
-            title: title,
-            isAllDay: true,
-            start: e.start,
-            end: e.end,
-            category:  'allday'
-        };
-        /* step2. save schedule */
-        cal.createSchedules([schedule]);
-        /* step3. clear guide element */
-        e.guide.clearGuideElement();
+        e.title = "user-name-schedule"
+        await saveNewSchedule(e);
     });
 
     cal.on('beforeUpdateSchedule', function(event) {
@@ -106,6 +72,7 @@ class Interval {
     });
 
     cal.on('clickSchedule', function(event) {
+        console.log("clickSchedule");
         var schedule = event.schedule;
 
         // focus the schedule
@@ -145,6 +112,53 @@ class Interval {
             isReadOnly: true    // schedule is read-only
         }
     ]);
+
+    async function saveNewSchedule(scheduleData) {
+        var calendar = scheduleData.calendar || findCalendar(scheduleData.calendarId);
+        var schedule = {
+            id: String(chance.guid()),
+            title: scheduleData.title,
+            isAllDay: scheduleData.isAllDay,
+            start: scheduleData.start,
+            end: scheduleData.end,
+            category: scheduleData.isAllDay ? 'allday' : 'time',
+            dueDateClass: '',
+            color: calendar.color,
+            bgColor: calendar.bgColor,
+            dragBgColor: calendar.bgColor,
+            borderColor: calendar.borderColor,
+            location: scheduleData.location,
+            isPrivate: scheduleData.isPrivate,
+            state: scheduleData.state
+        };
+        if (calendar) {
+            schedule.calendarId = calendar.id;
+            schedule.color = calendar.color;
+            schedule.bgColor = calendar.bgColor;
+            schedule.borderColor = calendar.borderColor;
+        }
+
+        cal.createSchedules([schedule]);
+
+        refreshScheduleVisibility();
+
+        await addParsedInterval(new Date(scheduleData.start).getTime(), new Date(scheduleData.end).getTime());
+    }
+
+    function refreshScheduleVisibility() {
+        var calendarElements = Array.prototype.slice.call(document.querySelectorAll('#calendarList input'));
+
+        CalendarList.forEach(function(calendar) {
+            cal.toggleSchedules(calendar.id, !calendar.checked, false);
+        });
+
+        cal.render(true);
+
+        calendarElements.forEach(function(input) {
+            var span = input.nextElementSibling;
+            span.style.backgroundColor = input.checked ? span.style.borderColor : 'transparent';
+        });
+    }
 
     function onClickMenu(e) {
         var target = $(e.target).closest('a[role="menuitem"]')[0];
