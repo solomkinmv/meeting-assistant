@@ -19,9 +19,13 @@ async function addInterval(ev) {
     return addParsedInterval(from, to);
 }
 
+function parseUsername() {
+    return inputUsername.value;
+}
+
 async function addParsedInterval(from, to) {
     const newInterval = new Interval(from, to);
-    const username = inputUsername.value;
+    const username = parseUsername();
 
     const intervals = userIntervals[username] || [];
     intervals.push(newInterval);
@@ -60,7 +64,7 @@ meetingClient.createMeeting().then(id => meetingId = id);
 
     cal.on('beforeCreateSchedule', async function (e) {
         console.log('beforeCreateSchedule', e);
-        e.title = "user-name-schedule"
+        e.title = parseUsername();
         await saveNewSchedule(e);
     });
 
