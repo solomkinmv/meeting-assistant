@@ -17,14 +17,34 @@
     <link rel="stylesheet" type="text/css" href="./css/icons.css">
 </head>
 <body>
-<div>
+<div id="top">
     <input id="name" placeholder="username" type="text"/>
     <div id="intervals">Intervals will be here</div>
     <div id="intersections"></div>
     <input id="intervalFrom" placeholder="04 October 2011 14:48 UTC" size="25"/>
     <input id="intervalTo" placeholder="04 October 2011 18:48 UTC+3" size="25"/>
     <button id="addInterval">Add interval</button>
-
+</div>
+<div id="lnb">
+    <div class="lnb-new-schedule">
+        <button id="btn-new-schedule" type="button" class="btn btn-default btn-block lnb-new-schedule-btn" data-toggle="modal">
+            New schedule</button>
+    </div>
+    <div id="lnb-calendars" class="lnb-calendars">
+        <div>
+            <div class="lnb-calendars-item">
+                <label>
+                    <input class="tui-full-calendar-checkbox-square" type="checkbox" value="all" checked>
+                    <span></span>
+                    <strong>View all</strong>
+                </label>
+            </div>
+        </div>
+        <div id="calendarList" class="lnb-calendars-d1">
+        </div>
+    </div>
+</div>
+<div id="right">
     <div id="menu">
             <span class="dropdown">
                 <button id="dropdownMenu-calendarType" class="btn btn-default btn-sm dropdown-toggle" type="button"
@@ -43,13 +63,6 @@
                     <li role="presentation">
                         <a class="dropdown-menu-title" role="menuitem" data-action="toggle-monthly">
                             <i class="calendar-icon ic_view_month"></i>Month
-                        </a>
-                    </li>
-                    <li role="presentation" class="dropdown-divider"></li>
-                    <li role="presentation">
-                        <a role="menuitem" data-action="toggle-start-day-1">
-                            <input type="checkbox" class="tui-full-calendar-checkbox-square" value="toggle-start-day-1">
-                            <span class="checkbox-title"></span>Start Week on Monday
                         </a>
                     </li>
                 </ul>
@@ -82,7 +95,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.0.13/chance.min.js"></script>
 <script src="./js/tui/tui-calendar.js"></script>
 <script src="./js/data/calendars.js"></script>
-<script src="./js/data/schedules.js"></script>
+<script src="./js/page-view.js"></script>
 <script src="./js/theme/dooray.js"></script>
 <script src="./js/meeting-client.js"></script>
 <script src="meeting-assistant.js" type="text/javascript"></script>

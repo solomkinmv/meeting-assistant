@@ -42,7 +42,7 @@ button.onclick = addInterval;
 meetingClient.createMeeting().then(id => meetingId = id);
 
 (function(window, Calendar) {
-    var cal = new Calendar('#calendar', {
+    const cal = new Calendar('#calendar', {
         defaultView: 'week',
         taskView: true,
         useCreationPopup: true,
@@ -117,9 +117,13 @@ meetingClient.createMeeting().then(id => meetingId = id);
         }
     ]);
 
+    cal.setCalendars(calendarList);
+    refreshScheduleVisibility(cal);
+
+
     async function saveNewSchedule(scheduleData) {
-        var calendar = scheduleData.calendar || findCalendar(scheduleData.calendarId);
-        var schedule = {
+        const calendar = scheduleData.calendar || findCalendar(scheduleData.calendarId);
+        const schedule = {
             id: String(chance.guid()),
             title: scheduleData.title,
             isAllDay: scheduleData.isAllDay,
@@ -144,24 +148,80 @@ meetingClient.createMeeting().then(id => meetingId = id);
 
         cal.createSchedules([schedule]);
 
-        refreshScheduleVisibility();
+        refreshScheduleVisibility(cal);
 
         await addParsedInterval(new Date(scheduleData.start).getTime(), new Date(scheduleData.end).getTime());
     }
 
-    function refreshScheduleVisibility() {
+    function onChangeCalendars(e) {
+        var calendarId = e.target.value;
+        var checked = e.target.checked;
+        var viewAll = document.querySelector('.lnb-calendars-item input');
         var calendarElements = Array.prototype.slice.call(document.querySelectorAll('#calendarList input'));
+        var allCheckedCalendars = true;
 
-        CalendarList.forEach(function(calendar) {
-            cal.toggleSchedules(calendar.id, !calendar.checked, false);
-        });
+        if (calendarId === 'all') {
+            allCheckedCalendars = checked;
 
-        cal.render(true);
+            calendarElements.forEach(function (input) {
+                var span = input.parentNode;
+                input.checked = checked;
+                span.style.backgroundColor = checked ? span.style.borderColor : 'transparent';
+            });
 
-        calendarElements.forEach(function(input) {
-            var span = input.nextElementSibling;
-            span.style.backgroundColor = input.checked ? span.style.borderColor : 'transparent';
-        });
+            CalendarList.forEach(function (calendar) {
+                calendar.checked = checked;
+            });
+        } else {
+            findCalendar(calendarId).checked = checked;
+
+            allCheckedCalendars = calendarElements.every(function (input) {
+                return input.checked;
+            });
+
+            if (allCheckedCalendars) {
+                viewAll.checked = true;
+            } else {
+                viewAll.checked = false;
+            }
+        }
+    }
+
+    function onChangeCalendars(e) {
+        console.log("On change calendars")
+        var calendarId = e.target.value;
+        var checked = e.target.checked;
+        var viewAll = document.querySelector('.lnb-calendars-item input');
+        var calendarElements = Array.prototype.slice.call(document.querySelectorAll('#calendarList input'));
+        var allCheckedCalendars = true;
+
+        if (calendarId === 'all') {
+            allCheckedCalendars = checked;
+
+            calendarElements.forEach(function(input) {
+                var span = input.parentNode;
+                input.checked = checked;
+                span.style.backgroundColor = checked ? span.style.borderColor : 'transparent';
+            });
+
+            calendarList.forEach(function(calendar) {
+                calendar.checked = checked;
+            });
+        } else {
+            findCalendar(calendarId).checked = checked;
+
+            allCheckedCalendars = calendarElements.every(function(input) {
+                return input.checked;
+            });
+
+            if (allCheckedCalendars) {
+                viewAll.checked = true;
+            } else {
+                viewAll.checked = false;
+            }
+        }
+
+        refreshScheduleVisibility(cal);
     }
 
     function onClickMenu(e) {
@@ -195,7 +255,7 @@ meetingClient.createMeeting().then(id => meetingId = id);
         cal.changeView(viewName, true);
 
         setDropdownCalendarType();
-        setRenderRangeText();
+        renderRangeText(cal);
     }
 
 
@@ -216,7 +276,7 @@ meetingClient.createMeeting().then(id => meetingId = id);
                 return;
         }
 
-        setRenderRangeText();
+        renderRangeText(cal);
     }
 
     function setDropdownCalendarType() {
@@ -237,26 +297,15 @@ meetingClient.createMeeting().then(id => meetingId = id);
         calendarTypeIcon.className = iconClassName;
     }
 
-    function currentCalendarDate(format) {
-        var currentDate = moment([cal.getDate().getFullYear(), cal.getDate().getMonth(), cal.getDate().getDate()]);
+    function createNewSchedule(event) {
+        console.log("create new schedule");
+        var start = event.start ? new Date(event.start.getTime()) : new Date();
+        var end = event.end ? new Date(event.end.getTime()) : moment().add(1, 'hours').toDate();
 
-        return currentDate.format(format);
-    }
-
-    function setRenderRangeText() {
-        var renderRange = document.getElementById('renderRange');
-        var options = cal.getOptions();
-        var viewName = cal.getViewName();
-
-        var html = [];
-        if (viewName === 'month') {
-            html.push(currentCalendarDate('YYYY.MM'));
-        } else {
-            html.push(moment(cal.getDateRangeStart().getTime()).format('YYYY.MM.DD'));
-            html.push(' ~ ');
-            html.push(moment(cal.getDateRangeEnd().getTime()).format(' MM.DD'));
-        }
-        renderRange.innerHTML = html.join('');
+        cal.openCreationPopup({
+            start: start,
+            end: end
+        });
     }
 
     function getDataAction(target) {
@@ -266,9 +315,12 @@ meetingClient.createMeeting().then(id => meetingId = id);
     function setEventListener() {
         $('#menu-navi').on('click', onClickNavi);
         $('.dropdown-menu a[role="menuitem"]').on('click', onClickMenu);
+        $('#lnb-calendars').on('change', onChangeCalendars);
+
+        $('#btn-new-schedule').on('click', createNewSchedule);
     }
 
     setDropdownCalendarType();
     setEventListener();
-    setRenderRangeText();
+    renderCalendars(calendarList);
 })(window, tui.Calendar);
