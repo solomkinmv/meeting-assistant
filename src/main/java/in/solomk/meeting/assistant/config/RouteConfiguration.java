@@ -20,11 +20,13 @@ public class RouteConfiguration {
                                                          UpdateIntervalsHandler updateIntervalsHandler) {
         HandlerFunction<ServerResponse> indexPage = (req) -> ServerResponse.ok().bodyValue(new ClassPathResource("app/index.html"));
         HandlerFunction<ServerResponse> meetingPage = (req) -> ServerResponse.ok().bodyValue(new ClassPathResource("app/meeting.html"));
+        HandlerFunction<ServerResponse> notFoundPage = (req) -> ServerResponse.ok().bodyValue(new ClassPathResource("public/error/404.html"));
         return RouterFunctions.route()
                               .GET("/api/meetings/{id}", getMeetingHandler)
                               .POST("/api/meetings/", createMeetingHandler)
                               .PUT("/api/meetings/{id}/intervals/{username}", updateIntervalsHandler)
                               .GET("/", indexPage)
+                              .GET("/404", notFoundPage)
                               .GET("/meeting/{meetingId}", meetingPage)
                               .build();
     }

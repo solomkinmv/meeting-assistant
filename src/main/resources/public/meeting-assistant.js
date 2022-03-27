@@ -2,25 +2,73 @@ class Application {
     constructor() {
         this.pageState = new PageState();
         this.meetingClient = new MeetingClient(new RestClient());
+        this.navigator = new Navigator();
         this.pageController = new PageController(this.pageState, this.meetingClient);
+        this.mainPageController = new MainPageController(this.meetingClient, this.navigator);
+        this.notFoundPageController = new NotFoundPageController();
+        this.router = new Router(this.mainPageController, this.pageController, this.notFoundPageController);
     }
 
     run() {
-        if (this.pageController.isMainPage()) {
-            console.log("Main page");
-            this.pageController.setName(this.promptName());
-            this.meetingClient.createMeeting()
-                .then(meetingId => this.pageController.openMeetingPage(meetingId));
-        } else {
-            if (!this.pageState.hasUsername()) {
-                this.pageController.setName(this.promptName());
-            }
-            this.pageController.initMeeting();
-        }
+        this.router.getController()
+            .onLoad();
     }
 
-    promptName() {
-        return prompt("Enter your name");
+}
+
+class Navigator {
+
+    openNotFound() {
+        window.location.href = `/404`;
+    }
+
+    openMainPage() {
+        window.location.href = `/`;
+    }
+
+    openMeetingPage(meetingId) {
+        window.location.href = `/meeting/${meetingId}`;
+    }
+
+}
+
+class Router {
+
+    constructor(mainPageController, meetingPageController, notFoundPageController) {
+        this.mainPageController = mainPageController;
+        this.meetingPageController = meetingPageController;
+        this.notFoundPageController = notFoundPageController;
+    }
+
+    getController() {
+        const path = window.location.pathname;
+        if (path === "/") {
+            return this.mainPageController;
+        } else if (path === "/404") {
+            return this.notFoundPageController;
+        } else if (path.startsWith("/meeting/")) {
+            return this.meetingPageController;
+        } else {
+            return this.notFoundPageController;
+        }
+    }
+}
+
+class NotFoundPageController {
+    onLoad() {
+    }
+}
+
+class MainPageController {
+
+    constructor(meetingClient, navigator) {
+        this.meetingClient = meetingClient;
+        this.navigator = navigator;
+    }
+
+    onLoad() {
+        this.meetingClient.createMeeting()
+            .then(meetingId => this.navigator.openMeetingPage(meetingId));
     }
 }
 
@@ -68,13 +116,9 @@ class PageController {
         this.button.onclick = this.addInterval.bind(this);
     }
 
-    setName(username) {
-        this.pageState.setUsername(username);
-        this.inputUsername.value = username;
-        console.log("Username: ", username);
-    }
+    onLoad() {
+        this.setName(this.promptName());
 
-    initMeeting() {
         let path = window.location.pathname.split('/');
         let meetingId = path[path.length - 1];
         if (meetingId) {
@@ -85,6 +129,16 @@ class PageController {
         } else {
             throw new Error('No meeting id found');
         }
+    }
+
+    promptName() {
+        return prompt("Enter your name");
+    }
+
+    setName(username) {
+        this.pageState.setUsername(username);
+        this.inputUsername.value = username;
+        console.log("Username: ", username);
     }
 
     isMainPage() {
