@@ -3,7 +3,7 @@ class Application {
         this.pageState = new PageState();
         this.meetingClient = new MeetingClient(new RestClient());
         this.navigator = new Navigator();
-        this.pageController = new PageController(this.pageState, this.meetingClient);
+        this.pageController = new MeetingPageController(this.pageState, this.meetingClient, this.navigator);
         this.mainPageController = new MainPageController(this.meetingClient, this.navigator);
         this.notFoundPageController = new NotFoundPageController();
         this.router = new Router(this.mainPageController, this.pageController, this.notFoundPageController);
@@ -102,11 +102,13 @@ class PageState {
 
 }
 
-class PageController {
+class MeetingPageController {
 
-    constructor(pageState, meetingClient) {
+    constructor(pageState, meetingClient, navigator) {
         this.pageState = pageState;
         this.meetingClient = meetingClient;
+        this.navigator = navigator;
+
         this.inputIntervalFrom = document.getElementById('intervalFrom');
         this.inputIntervalTo = document.getElementById('intervalTo');
         this.inputUsername = document.getElementById('name');
@@ -125,7 +127,11 @@ class PageController {
             console.log("Page with meeting id: ", meetingId);
             this.meetingClient.getMeeting(meetingId)
                 .then(meeting => this.pageState.setMeeting(meeting))
-                .then(() => this.renderIntervals());
+                .then(() => this.renderIntervals())
+                .catch(error => {
+                    console.log(`Failed to get meeting ${meetingId}: `, error);
+                    this.navigator.openNotFound();
+                });
         } else {
             throw new Error('No meeting id found');
         }
@@ -273,13 +279,13 @@ new Application().run();
 
 /*
 TODO:
-1. Creating meeting if no such meeting on get
-2. Don't ask username one more time if already set
-3. Add meting info if any
-4. Handle exception if failed to set intervals
-5. Eliminate promise chaining
-6. Add option to delete intervals
-7. Read response to Meeting object
-8. Display users in persistent order
+* Don't ask username one more time if already set
+* Add meting info if any
+* Handle exception if failed to set intervals
+* Eliminate promise chaining
+* Add option to delete intervals
+* Read response to Meeting object
+* Display users in persistent order
+* Make general 404 page and not found meeting page
  */
 
