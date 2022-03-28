@@ -32,13 +32,25 @@ public class MeetingsTestClient {
 
     public WebTestClient.ResponseSpec getIndexPage() {
         return webTestClient.get()
-                            .uri("/index.html")
+                            .uri("/")
+                            .exchange();
+    }
+
+    public WebTestClient.ResponseSpec get404Page() {
+        return webTestClient.get()
+                            .uri("/404")
+                            .exchange();
+    }
+
+    public WebTestClient.ResponseSpec getCustomPage() {
+        return webTestClient.get()
+                            .uri("/custom-page")
                             .exchange();
     }
 
     public WebTestClient.ResponseSpec createMeeting() {
         return webTestClient.post()
-                            .uri("/meetings/")
+                            .uri("/api/meetings/")
                             .exchange();
     }
 
@@ -50,7 +62,7 @@ public class MeetingsTestClient {
 
     public WebTestClient.ResponseSpec getMeeting(String meetingId) {
         return webTestClient.get()
-                            .uri("/meetings/{id}", meetingId)
+                            .uri("/api/meetings/{id}", meetingId)
                             .exchange();
     }
 
@@ -62,7 +74,7 @@ public class MeetingsTestClient {
 
     public WebTestClient.ResponseSpec setIntervalsForUser(String meetingId, String username, List<IntervalRequest> intervals) {
         return webTestClient.put()
-                            .uri("/meetings/{id}/intervals/{username}", meetingId, username)
+                            .uri("/api/meetings/{id}/intervals/{username}", meetingId, username)
                             .bodyValue(new BatchIntervalsRequest(intervals))
                             .exchange();
     }
