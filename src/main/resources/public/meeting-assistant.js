@@ -79,11 +79,11 @@ class MainPageController {
 
 class PageState {
     setUsername(username) {
-        this.username = username;
+        sessionStorage.setItem("username", username);
     }
 
-    hasUsername() {
-        return this.username != null;
+    getUsername() {
+        return sessionStorage.getItem("username");
     }
 
     setMeetingId(meetingId) {
@@ -96,10 +96,11 @@ class PageState {
         this.userIntervals = meeting.userIntervals;
         this.intersections = meeting.intersections;
     }
+
     addInterval(newInterval) {
-        const intervals = this.userIntervals[this.username] || [];
+        const intervals = this.userIntervals[this.getUsername()] || [];
         intervals.push(newInterval);
-        this.userIntervals[this.username] = intervals;
+        this.userIntervals[this.getUsername()] = intervals;
 
         console.log("Updated page state", this);
         return intervals;
@@ -123,8 +124,7 @@ class MeetingPageController {
         this.intervalsBlock = document.getElementById('intervals')
 
         this.button.onclick = this.addInterval.bind(this);
-
-        this.setName(this.promptName());
+        this.inputUsername.onchange = this.updateUsername.bind(this);
 
         let path = window.location.pathname.split('/');
         let meetingId = path[path.length - 1];
@@ -140,6 +140,12 @@ class MeetingPageController {
         } else {
             throw new Error('No meeting id found');
         }
+
+        this.setName(this.pageState.getUsername() || this.promptName());
+    }
+
+    updateUsername() {
+        this.pageState.setUsername(this.inputUsername.value);
     }
 
     promptName() {
@@ -164,7 +170,7 @@ class MeetingPageController {
     addInterval() {
         const newInterval = new Interval(this.parseDate(this.inputIntervalFrom.value), this.parseDate(this.inputIntervalTo.value));
         const intervals = this.pageState.addInterval(newInterval);
-        this.meetingClient.setIntervals(this.pageState.meetingId, this.pageState.username, intervals)
+        this.meetingClient.setIntervals(this.pageState.meetingId, this.pageState.getUsername(), intervals)
             .then(meeting => this.pageState.setMeeting(meeting))
             .then(() => this.renderIntervals())
             .catch(error => console.log("Failed to update intervals for user: ", error));
@@ -284,6 +290,8 @@ new Application().run();
 
 /*
 TODO:
+* Merge intervals on client side
+* Show intersections if only one user
 * Don't ask username one more time if already set
 * Add meting info if any
 * Handle exception if failed to set intervals
@@ -292,5 +300,6 @@ TODO:
 * Read response to Meeting object
 * Display users in persistent order
 * Make general 404 page and not found meeting page
+* Support explicit time zones
  */
 
