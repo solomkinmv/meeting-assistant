@@ -67,9 +67,14 @@ class MainPageController {
     }
 
     onLoad() {
-        this.meetingClient.createMeeting()
-            .then(meetingId => this.navigator.openMeetingPage(meetingId));
+        this.newMeetingButton = document.getElementById("new-meeting-button");
+
+        this.newMeetingButton.onclick = () => {
+            this.meetingClient.createMeeting()
+                .then(meetingId => this.navigator.openMeetingPage(meetingId));
+        }
     }
+
 }
 
 class PageState {
@@ -108,7 +113,9 @@ class MeetingPageController {
         this.pageState = pageState;
         this.meetingClient = meetingClient;
         this.navigator = navigator;
+    }
 
+    onLoad() {
         this.inputIntervalFrom = document.getElementById('intervalFrom');
         this.inputIntervalTo = document.getElementById('intervalTo');
         this.inputUsername = document.getElementById('name');
@@ -116,9 +123,7 @@ class MeetingPageController {
         this.intervalsBlock = document.getElementById('intervals')
 
         this.button.onclick = this.addInterval.bind(this);
-    }
 
-    onLoad() {
         this.setName(this.promptName());
 
         let path = window.location.pathname.split('/');
