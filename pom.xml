@@ -23,6 +23,7 @@
 
     <properties>
         <java.version>17</java.version>
+        <docker-maven-plugin.version>0.39.1</docker-maven-plugin.version>
         <jacoco.plugin.version>0.8.7</jacoco.plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     </properties>
@@ -73,12 +74,40 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <layers>
+                        <enabled>true</enabled>
+                        <includeLayerTools>true</includeLayerTools>
+                    </layers>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>${docker-maven-plugin.version}</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <images>
+                        <image>
+                            <name>solomkinmv/${project.artifactId}</name>
+                            <build>
+                                <assembly>
+                                    <descriptorRef>artifact</descriptorRef>
+                                </assembly>
+                                <dockerFile>Dockerfile</dockerFile>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${project.version}</tag>
+                                </tags>
+                            </build>
+                        </image>
+                    </images>
                 </configuration>
             </plugin>
 
@@ -108,7 +137,7 @@
                     <scmCommentPrefix xml:space="preserve">[CI] </scmCommentPrefix>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
-                    <goals>install</goals>
+                    <goals>install docker:build docker:push</goals>
                 </configuration>
             </plugin>
         </plugins>
