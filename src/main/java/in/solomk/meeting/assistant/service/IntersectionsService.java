@@ -13,7 +13,7 @@ import static java.util.Collections.emptyList;
 public class IntersectionsService {
 
     public List<Interval> findIntersections(List<List<Interval>> intervalGroups) {
-        if (intervalGroups.size() < 2) return emptyList();
+        if (intervalGroups.isEmpty()) return emptyList();
 
         List<Interval> intervals = intervalGroups.get(0);
         for (int i = 1; i < intervalGroups.size(); i++) {
