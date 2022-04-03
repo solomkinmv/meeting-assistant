@@ -14,8 +14,9 @@ class IntersectionsServiceTest {
     private final IntersectionsService intersectionsService = new IntersectionsService();
 
     @Test
-    void returnsEmptyListIfSingleGroup() {
-        verifyIntervals(List.of(group(interval(100, 200), interval(300, 500))), emptyList());
+    void returnsSingleUserIntervalsIfSingleGroup() {
+        var singleUserGroup = group(interval(100, 200), interval(300, 500));
+        verifyIntervals(List.of(singleUserGroup), singleUserGroup);
     }
 
     @Test

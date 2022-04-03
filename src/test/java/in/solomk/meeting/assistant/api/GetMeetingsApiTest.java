@@ -34,10 +34,11 @@ public class GetMeetingsApiTest extends BaseFuncTest {
         var username = "user-1";
         testClient.setIntervalsForUser(meetingId, username, List.of(intervalReq(100, 300), intervalReq(500, 1000)));
 
+        var singleUserIntervalResponses = List.of(intervalRes(100, 300), intervalRes(500, 1000));
         verifyMeetingResponse(
                 new MeetingResponse(meetingId,
-                                    Map.of(username, List.of(intervalRes(100, 300), intervalRes(500, 1000))),
-                                    emptyList()));
+                                    Map.of(username, singleUserIntervalResponses),
+                                    singleUserIntervalResponses));
     }
 
     @Test

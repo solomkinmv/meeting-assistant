@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.Collections.emptyList;
-
 public class UpdateMeetingsApiTest extends BaseFuncTest {
 
     private static final String MEETING_ID = "123";
@@ -42,10 +40,10 @@ public class UpdateMeetingsApiTest extends BaseFuncTest {
     @Test
     void updatesIntervalsForUsers() {
         String meetingId = createMeeting();
+        var singleUserIntervalResponses = List.of(intervalRes(100, 200), intervalRes(300, 400));
         var expectedMeetingResponse = new MeetingResponse(meetingId,
-                                                          Map.of(USER_1, List.of(intervalRes(100, 200),
-                                                                                 intervalRes(300, 400))),
-                                                          emptyList());
+                                                          Map.of(USER_1, singleUserIntervalResponses),
+                                                          singleUserIntervalResponses);
 
         testClient.setIntervalsForUser(meetingId, USER_1,
                                        List.of(intervalReq(100, 200),
@@ -59,18 +57,18 @@ public class UpdateMeetingsApiTest extends BaseFuncTest {
     @Test
     void replacesIntervalsForUser() {
         String meetingId = createMeeting();
+        var singleUserIntervalResponses = List.of(intervalRes(150, 200));
         var expectedMeetingResponse = new MeetingResponse(meetingId,
-                                                          Map.of(USER_1, List.of(intervalRes(150, 200))),
-                                                          emptyList());
+                                                          Map.of(USER_1, singleUserIntervalResponses),
+                                                          singleUserIntervalResponses);
 
 
         testClient.setIntervalsForUser(meetingId, USER_1, List.of(intervalReq(100, 200)));
-        testClient.setIntervalsForUser(meetingId, USER_1,
-                                                             List.of(intervalReq(150, 200)))
-                                        .expectStatus()
-                                        .isOk()
-                                        .expectBody(MeetingResponse.class)
-                                        .isEqualTo(expectedMeetingResponse);
+        testClient.setIntervalsForUser(meetingId, USER_1, List.of(intervalReq(150, 200)))
+                  .expectStatus()
+                  .isOk()
+                  .expectBody(MeetingResponse.class)
+                  .isEqualTo(expectedMeetingResponse);
     }
 
     @Test
