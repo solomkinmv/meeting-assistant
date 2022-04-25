@@ -137,7 +137,7 @@
                     <scmCommentPrefix xml:space="preserve">[CI] </scmCommentPrefix>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <tagNameFormat>v@{project.version}</tagNameFormat>
-                    <goals>install docker:build docker:push</goals>
+                    <goals>package docker:build docker:push</goals>
                 </configuration>
             </plugin>
         </plugins>
