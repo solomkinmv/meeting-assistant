@@ -11,18 +11,23 @@ jobs:
     steps:
       - name: "Print tag name"
         run: echo "Just pushed tag ${GITHUB_REF_NAME:1}"
+
+      - name: "Parse version"
+        run: echo "VERSION=${GITHUB_REF_NAME:1}" >> $GITHUB_ENV
+
       - name: DigitalOcean App Platform deployment
         uses: digitalocean/app_action@v1.1.2
         with:
           app_name: meeting-assistant
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           images: '[
-                {
-                  "name": "solomkinmv-meeting-assistant",
-                   "image":{
-                    "registry_type": "DOCKER_HUB",
-                    "repository": "meeting-assistant",
-                    "tag": "${GITHUB_REF_NAME:1}"
-                  },
-                }
-              ]'
+                     {
+                       "name": "solomkinmv-meeting-assistant",
+                       "image": {
+                         "registry_type": "DOCKER_HUB",
+                         "registry": "solomkinmv",
+                         "repository": "meeting-assistant",
+                         "tag": "${{ env.VERSION }}"
+                       }
+                     }
+                   ]'
