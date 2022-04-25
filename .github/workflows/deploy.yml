@@ -1,0 +1,27 @@
+name: Deploy version
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: "contains(github.event.head_commit.message, '[CI] prepare release')"
+
+    steps:
+      - name: DigitalOcean App Platform deployment
+        uses: digitalocean/app_action@v1.1.2
+        with:
+          app_name: meeting-assistant
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          images: '[
+                {
+                  "name": "solomkinmv-meeting-assistant",
+                   "image":{
+                    "registry_type": "DOCKER_HUB",
+                    "repository": "meeting-assistant",
+                    "tag": "${GITHUB_REF_NAME:1}"
+                  },
+                }
+              ]'
