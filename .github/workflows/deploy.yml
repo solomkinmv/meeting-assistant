@@ -2,13 +2,15 @@ name: Deploy version
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - '*'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+      - name: "Print tag name"
+        run: echo "Just pushed tag ${GITHUB_REF_NAME:1}"
       - name: DigitalOcean App Platform deployment
         uses: digitalocean/app_action@v1.1.2
         with:
