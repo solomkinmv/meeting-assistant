@@ -5,7 +5,18 @@ name: Build PR with Maven
 
 on:
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+    paths:
+      - '**.js'
+      - '**.java'
+      - '**.css'
+      - '**.html'
+      - '**.yml'
+      - '**.yaml'
+      - '**/pom.xml'
+      - '**.properties'
+      - '**Dockerfile'
 
 jobs:
   build:
