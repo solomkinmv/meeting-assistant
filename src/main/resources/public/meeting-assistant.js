@@ -182,6 +182,10 @@ class MeetingPageController {
 
     addInterval() {
         const newInterval = new Interval(this.parseDate(this.inputIntervalFrom.value), this.parseDate(this.inputIntervalTo.value));
+        if (newInterval.from >= newInterval.to) {
+            alert("Invalid interval");
+            return;
+        }
         const intervals = this.pageState.addInterval(newInterval);
         this.meetingClient.setIntervals(this.pageState.meetingId, this.pageState.getUsername(), intervals)
             .then(meeting => this.pageState.setMeeting(meeting))

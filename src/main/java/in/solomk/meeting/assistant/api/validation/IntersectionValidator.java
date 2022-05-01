@@ -8,10 +8,21 @@ import reactor.core.publisher.Mono;
 @Component
 public class IntersectionValidator {
 
-    // todo: validate when from greater then to
-    // todo: validate when two intervals can be joined
-    public Mono<BatchIntervalsRequest> validateNoIntersections(BatchIntervalsRequest batchRequest) {
+    public Mono<BatchIntervalsRequest> validateIntervals(BatchIntervalsRequest batchRequest) {
         var intervals = batchRequest.intervals();
+        for (var interval : intervals) {
+            if (interval.from() < 0 || interval.to() < 0) {
+                var exception = new ValidationException(
+                        "Intervals from request are invalid. Received intervals with negative values: %s", intervals);
+                return Mono.error(exception);
+            }
+
+            if (interval.from() >= interval.to()) {
+                var exception = new ValidationException("Intervals from request are invalid. Received intervals with from date greater than to: %s", intervals);
+                return Mono.error(exception);
+            }
+        }
+
         for (int i = 1; i < intervals.size(); i++) {
             if (intervals.get(i).from() <= intervals.get(i - 1).to()) {
                 var exception = new ValidationException(
