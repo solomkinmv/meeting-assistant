@@ -100,10 +100,23 @@ class PageState {
     addInterval(newInterval) {
         const intervals = this.userIntervals[this.getUsername()] || [];
         intervals.push(newInterval);
-        this.userIntervals[this.getUsername()] = intervals;
+        intervals.sort((a, b) => a.from - b.from);
 
-        console.log("Updated page state", this);
-        return intervals;
+        const updatedIntervals = [];
+        updatedIntervals.push(intervals[0]);
+
+        for (let i = 1; i < intervals.length; i++) {
+            if (intervals[i].from <= updatedIntervals[updatedIntervals.length - 1].to) {
+                updatedIntervals[updatedIntervals.length - 1].to = Math.max(updatedIntervals[updatedIntervals.length - 1].to, intervals[i].to);
+            } else {
+                updatedIntervals.push(intervals[i]);
+            }
+        }
+
+        this.userIntervals[this.getUsername()] = updatedIntervals;
+
+        console.log("Updated page state after inserting interval", newInterval, this);
+        return updatedIntervals;
     }
 
 }

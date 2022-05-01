@@ -2,8 +2,6 @@
 
 APP:
 
-* Merge intervals on client side
-* Don't ask username one more time if already set
 * Add meting info if any
 * Handle exception if failed to set intervals
 * Eliminate promise chaining
