@@ -31,7 +31,7 @@ public class UpdateIntervalsHandler implements HandlerFunction<ServerResponse> {
         return ServerResponse.ok()
                              .contentType(APPLICATION_JSON)
                              .body(extractSortedRequestBody(request)
-                                           .flatMap(validator::validateNoIntersections)
+                                           .flatMap(validator::validateIntervals)
                                            .flatMap(batchRequest -> meetingService.setIntervalsForUser(
                                                    request.pathVariable("id"),
                                                    request.pathVariable("username"),
