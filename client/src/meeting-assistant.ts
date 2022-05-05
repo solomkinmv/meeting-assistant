@@ -28,7 +28,7 @@ class AppNavigator {
         window.location.href = `/`;
     }
 
-    openMeetingPage(meetingId) {
+    openMeetingPage(meetingId: string) {
         window.location.href = `/meeting/${meetingId}`;
     }
 
@@ -39,7 +39,9 @@ class Router {
     meetingPageController: MeetingPageController;
     notFoundPageController: NotFoundPageController;
 
-    constructor(mainPageController, meetingPageController, notFoundPageController) {
+    constructor(mainPageController: MainPageController,
+                meetingPageController: MeetingPageController,
+                notFoundPageController: NotFoundPageController) {
         this.mainPageController = mainPageController;
         this.meetingPageController = meetingPageController;
         this.notFoundPageController = notFoundPageController;
@@ -69,7 +71,7 @@ class MainPageController {
     navigator: AppNavigator;
     newMeetingButton: HTMLElement;
 
-    constructor(meetingClient, navigator) {
+    constructor(meetingClient: MeetingClient, navigator: AppNavigator) {
         this.meetingClient = meetingClient;
         this.navigator = navigator;
     }
@@ -86,31 +88,31 @@ class MainPageController {
 }
 
 class PageState {
-    meetingId: number;
-    userIntervals: Map<String, Array<Interval>>;
+    meetingId: string;
+    userIntervals: Map<String, Interval[]>;
     intersections: Array<Interval>;
 
-    setUsername(username) {
+    setUsername(username: string) {
         sessionStorage.setItem("username", username);
     }
 
-    getUsername() {
+    getUsername(): string {
         return sessionStorage.getItem("username");
     }
 
-    setMeetingId(meetingId) {
+    setMeetingId(meetingId: string) {
         this.meetingId = meetingId;
     }
 
-    setMeeting(meeting) {
+    setMeeting(meeting: Meeting) {
         console.log("Setting meeting: ", meeting);
         this.meetingId = meeting.id;
         this.userIntervals = meeting.userIntervals;
         this.intersections = meeting.intersections;
     }
 
-    addInterval(newInterval) {
-        const intervals = this.userIntervals[this.getUsername()] || [];
+    addInterval(newInterval: Interval) {
+        const intervals = this.userIntervals.get(this.getUsername()) || [];
         intervals.push(newInterval);
         intervals.sort((a, b) => a.from - b.from);
 
@@ -125,7 +127,7 @@ class PageState {
             }
         }
 
-        this.userIntervals[this.getUsername()] = updatedIntervals;
+        this.userIntervals.set(this.getUsername(), updatedIntervals);
 
         console.log("Updated page state after inserting interval", newInterval, this);
         return updatedIntervals;
@@ -143,7 +145,7 @@ class MeetingPageController {
     intervalsBlock: HTMLElement;
     button: HTMLElement;
 
-    constructor(pageState, meetingClient, navigator) {
+    constructor(pageState: PageState, meetingClient: MeetingClient, navigator: AppNavigator) {
         this.pageState = pageState;
         this.meetingClient = meetingClient;
         this.navigator = navigator;
@@ -185,7 +187,7 @@ class MeetingPageController {
         return prompt("Enter your name");
     }
 
-    setName(username) {
+    setName(username: string) {
         this.pageState.setUsername(username);
         this.inputUsername.value = username;
         console.log("Username: ", username);
@@ -195,7 +197,7 @@ class MeetingPageController {
         return window.location.pathname === '/';
     }
 
-    openMeetingPage(meetingId) {
+    openMeetingPage(meetingId: string) {
         window.location.href = `/meeting/${meetingId}`;
         this.pageState.setMeetingId(meetingId);
     }
@@ -213,7 +215,7 @@ class MeetingPageController {
             .catch(error => console.log("Failed to update intervals for user: ", error));
     }
 
-    parseDate(dateString) {
+    parseDate(dateString: string): number {
         return new Date(dateString).getTime();
     }
 
@@ -251,22 +253,22 @@ class Interval {
     from: number;
     to: number;
 
-    constructor(from, to) {
+    constructor(from: number, to: number) {
         this.from = from;
         this.to = to;
     }
 }
 
 class Meeting {
-    id;
-    userIntervals;
-    intersections;
+    id: string;
+    userIntervals: Map<String, Interval[]>;
+    intersections: [Interval];
 }
 
 class MeetingClient {
     restClient: RestClient;
 
-    constructor(restClient) {
+    constructor(restClient: RestClient) {
         this.restClient = restClient;
     }
 
@@ -276,14 +278,14 @@ class MeetingClient {
         return meeting['id'];
     }
 
-    async setIntervals(meetingId, username, intervals) {
+    async setIntervals(meetingId: string, username: string, intervals: Interval[]) {
         const meeting = await this.restClient.put(`/api/meetings/${meetingId}/intervals/${username}`,
             {intervals: intervals});
         console.log('Received response on update of intervals', meeting);
         return meeting;
     }
 
-    async getMeeting(meetingId) {
+    async getMeeting(meetingId: string) {
         const meeting = await this.restClient.get(`/api/meetings/${meetingId}`);
         console.log('Received response on meeting retrieval', meeting);
         return meeting;
@@ -292,14 +294,14 @@ class MeetingClient {
 
 class RestClient {
 
-    async get(url) {
+    async get(url: string) {
         const response = await fetch(url);
         const data = await response.json();
         console.log('Received response on get', data);
         return data;
     }
 
-    async post(url, body) {
+    async post(url: string, body: any) {
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -312,7 +314,7 @@ class RestClient {
         return data;
     }
 
-    async put(url, body) {
+    async put(url: string, body: any) {
         const response = await fetch(url, {
             method: 'PUT',
             headers: {
