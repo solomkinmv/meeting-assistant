@@ -1,33 +1,30 @@
 const path = require('path');
-
-// module.exports = {
-//     entry: "./src/index.ts",
-//     output: {
-//         filename: 'bundle.js',
-//         path: path.resolve(__dirname, 'dist'),
-//     },
-//     module: {
-//         rules: [
-//             {
-//                 test: /\.css$/i,
-//                 use: ['style-loader', 'css-loader'],
-//             },
-//             {
-//                 test: /\.(png|svg|jpg|jpeg|gif)$/i,
-//                 type: 'asset/resource',
-//             },
-//         ],
-//     },
-// };
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    entry: "./src/index.ts",
+    mode: 'development',
+    entry: {
+        index: './src/index.ts',
+        print: './src/print.ts',
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: 'Development',
+        })
+    ],
     output: {
-        filename: 'bundle.js',
+        filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),
+        clean: true,
+    },
+    optimization: {
+        runtimeChunk: "single"
     },
     // Enable sourcemaps for debugging webpack's output.
-    devtool: "source-map",
+    devtool: "inline-source-map",
+    devServer: {
+        static: './dist',
+    },
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
