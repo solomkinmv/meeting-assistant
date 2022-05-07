@@ -12,6 +12,7 @@ class Application {
     }
 
     run() {
+        console.log("Started app");
         this.router.getController()
             .onLoad();
     }
@@ -34,6 +35,10 @@ class AppNavigator {
 
 }
 
+interface Controller {
+    onLoad(): void
+}
+
 class Router {
     mainPageController: MainPageController;
     meetingPageController: MeetingPageController;
@@ -47,7 +52,7 @@ class Router {
         this.notFoundPageController = notFoundPageController;
     }
 
-    getController() {
+    getController(): Controller { // TODO: get rid of this, I don't need SPA
         const path = window.location.pathname;
         if (path === "/") {
             return this.mainPageController;
@@ -56,30 +61,33 @@ class Router {
         } else if (path.startsWith("/meeting/")) {
             return this.meetingPageController;
         } else {
-            return this.notFoundPageController;
+            console.debug("No controller found")
+            return this.notFoundPageController
         }
     }
 }
 
-class NotFoundPageController {
+class NotFoundPageController implements Controller {
     onLoad() {
     }
 }
 
-class MainPageController {
-    meetingClient: MeetingClient;
-    navigator: AppNavigator;
-    newMeetingButton: HTMLElement;
+class MainPageController implements Controller {
+    meetingClient: MeetingClient
+    navigator: AppNavigator
+    newMeetingButton: HTMLElement
 
     constructor(meetingClient: MeetingClient, navigator: AppNavigator) {
-        this.meetingClient = meetingClient;
-        this.navigator = navigator;
+        this.meetingClient = meetingClient
+        this.navigator = navigator
     }
 
     onLoad() {
+        console.debug("Loading main controller")
         this.newMeetingButton = document.getElementById("new-meeting-button");
 
         this.newMeetingButton.onclick = () => {
+            console.debug("Clicked new meeting button")
             this.meetingClient.createMeeting()
                 .then(meetingId => this.navigator.openMeetingPage(meetingId));
         }
@@ -135,7 +143,7 @@ class PageState {
 
 }
 
-class MeetingPageController {
+class MeetingPageController implements Controller {
     pageState: PageState;
     meetingClient: MeetingClient;
     navigator: AppNavigator;
