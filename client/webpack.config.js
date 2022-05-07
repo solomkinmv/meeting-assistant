@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     mode: 'development',
     entry: {
-        meetingAssistant: './src/meeting-assistant.ts'
+        meetingAssistant: './src/scripts/meeting-assistant.ts'
     },
     plugins: [
         new HtmlWebpackPlugin({
