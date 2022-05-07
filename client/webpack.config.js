@@ -4,21 +4,24 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     mode: 'development',
     entry: {
-        index: './src/index.ts',
-        print: './src/print.ts',
+        meetingAssistant: './src/meeting-assistant.ts'
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'Development',
+            hash: true,
+            template: './src/template/index.html',
+            filename: './index.html'
+        }),
+        new HtmlWebpackPlugin({
+            hash: true,
+            template: './src/template/meeting.html',
+            filename: './meeting.html'
         })
     ],
     output: {
         filename: '[name].bundle.js',
         path: path.resolve(__dirname, 'dist'),
         clean: true,
-    },
-    optimization: {
-        runtimeChunk: "single"
     },
     // Enable sourcemaps for debugging webpack's output.
     devtool: "inline-source-map",
@@ -39,12 +42,7 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 loader: "ts-loader"
-            },
-            // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            {
-                test: /\.js$/,
-                loader: "source-map-loader"
-            },
+            }
         ],
     },
     // Other options...
