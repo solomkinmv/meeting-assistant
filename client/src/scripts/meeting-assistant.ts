@@ -1,103 +1,8 @@
 import {MeetingClient, RestClient} from "./meeting-client";
 import {Interval} from "./model/interval";
 import {Meeting} from "./model/meeting";
-
-class Application {
-    router: Router;
-
-    constructor() {
-        const pageState = new PageState();
-        const meetingClient = new MeetingClient(new RestClient());
-        const navigator = new AppNavigator();
-        const pageController = new MeetingPageController(pageState, meetingClient, navigator);
-        const mainPageController = new MainPageController(meetingClient, navigator);
-        const notFoundPageController = new NotFoundPageController();
-        this.router = new Router(mainPageController, pageController, notFoundPageController);
-    }
-
-    run() {
-        console.log("Started app");
-        this.router.getController()
-            .onLoad();
-    }
-
-}
-
-class AppNavigator {
-
-    openNotFound() {
-        window.location.href = `/404`;
-    }
-
-    openMainPage() {
-        window.location.href = `/`;
-    }
-
-    openMeetingPage(meetingId: string) {
-        window.location.href = `/meeting/${meetingId}`;
-    }
-
-}
-
-interface Controller {
-    onLoad(): void
-}
-
-class Router {
-    mainPageController: MainPageController;
-    meetingPageController: MeetingPageController;
-    notFoundPageController: NotFoundPageController;
-
-    constructor(mainPageController: MainPageController,
-                meetingPageController: MeetingPageController,
-                notFoundPageController: NotFoundPageController) {
-        this.mainPageController = mainPageController;
-        this.meetingPageController = meetingPageController;
-        this.notFoundPageController = notFoundPageController;
-    }
-
-    getController(): Controller { // TODO: get rid of this, I don't need SPA
-        const path = window.location.pathname;
-        if (path === "/") {
-            return this.mainPageController;
-        } else if (path === "/404") {
-            return this.notFoundPageController;
-        } else if (path.startsWith("/meeting/")) {
-            return this.meetingPageController;
-        } else {
-            console.debug("No controller found")
-            return this.notFoundPageController
-        }
-    }
-}
-
-class NotFoundPageController implements Controller {
-    onLoad() {
-    }
-}
-
-class MainPageController implements Controller {
-    meetingClient: MeetingClient
-    navigator: AppNavigator
-    newMeetingButton: HTMLElement
-
-    constructor(meetingClient: MeetingClient, navigator: AppNavigator) {
-        this.meetingClient = meetingClient
-        this.navigator = navigator
-    }
-
-    onLoad() {
-        console.debug("Loading main controller")
-        this.newMeetingButton = document.getElementById("new-meeting-button");
-
-        this.newMeetingButton.onclick = () => {
-            console.debug("Clicked new meeting button")
-            this.meetingClient.createMeeting()
-                .then(meetingId => this.navigator.openMeetingPage(meetingId));
-        }
-    }
-
-}
+import {Controller} from "./controller/controller";
+import {AppNavigator} from "./app-navigator";
 
 class PageState {
     meetingId: string;
@@ -164,6 +69,7 @@ class MeetingPageController implements Controller {
     }
 
     onLoad() {
+        console.debug("Loading meeting controller")
         this.inputIntervalFrom = document.getElementById('intervalFrom') as HTMLInputElement;
         this.inputIntervalTo = document.getElementById('intervalTo') as HTMLInputElement;
         this.inputUsername = document.getElementById('name') as HTMLInputElement;
@@ -203,15 +109,6 @@ class MeetingPageController implements Controller {
         this.pageState.setUsername(username);
         this.inputUsername.value = username;
         console.log("Username: ", username);
-    }
-
-    isMainPage() {
-        return window.location.pathname === '/';
-    }
-
-    openMeetingPage(meetingId: string) {
-        window.location.href = `/meeting/${meetingId}`;
-        this.pageState.setMeetingId(meetingId);
     }
 
     addInterval() {
@@ -261,4 +158,6 @@ class MeetingPageController implements Controller {
     }
 }
 
-new Application().run();
+// new Application().run();
+new MeetingPageController(new PageState(), new MeetingClient(new RestClient()), new AppNavigator())
+    .onLoad();
