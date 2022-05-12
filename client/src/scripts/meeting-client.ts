@@ -1,4 +1,5 @@
 import {Interval} from "./model/interval";
+import {Meeting} from "./model/meeting";
 
 export class MeetingClient {
     restClient: RestClient;
@@ -8,23 +9,27 @@ export class MeetingClient {
     }
 
     async createMeeting(): Promise<string> {
-        const meeting = await this.restClient.post(`${process.env.MEETING_ASSISTANT_API_URL}/api/meetings/`, null);
+        const meeting = await this.restClient.post(`/api/meetings/`, null);
+        // const meeting = await this.restClient.post(`${process.env.MEETING_ASSISTANT_API_URL}/api/meetings/`, null);
         console.log('Received response after meeting creation', meeting);
         return meeting['id'];
     }
 
     async setIntervals(meetingId: string, username: string, intervals: Interval[]) {
-        const meeting = await this.restClient.put(`${process.env.MEETING_ASSISTANT_API_URL}/api/meetings/${meetingId}/intervals/${username}`,
+        const meeting = await this.restClient.put(`/api/meetings/${meetingId}/intervals/${username}`,
             {intervals: intervals});
         console.log('Received response on update of intervals', meeting);
         return meeting;
     }
 
-    async getMeeting(meetingId: string) {
+    async getMeeting(meetingId: string): Promise<Meeting> {
         console.debug('Getting meeting', meetingId);
-        const meeting = await this.restClient.get(`${process.env.MEETING_ASSISTANT_API_URL}/api/meetings/${meetingId}`);
+        const meeting = await this.restClient.get(`/api/meetings/${meetingId}`);
         console.log('Received response on meeting retrieval', meeting);
-        return meeting;
+        return new Meeting(meeting.id,
+            new Map<String, Interval[]>(Object.entries(meeting.userIntervals)),
+            meeting.intersections
+        );
     }
 }
 
