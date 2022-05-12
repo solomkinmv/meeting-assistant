@@ -13,3 +13,6 @@ APP:
 PROJECT:
 
 * Add .editorconfig
+* Configure typescript linter
+    * Warn about redundant semicolons
+* Configure java linter

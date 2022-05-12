@@ -6,19 +6,15 @@ import {AppNavigator} from "./app-navigator";
 
 class PageState {
     meetingId: string;
-    userIntervals: Map<String, Interval[]>;
+    userIntervals: Record<string, Interval[]>;
     intersections: Array<Interval>;
-
-    setUsername(username: string) {
-        sessionStorage.setItem("username", username);
-    }
 
     getUsername(): string {
         return sessionStorage.getItem("username");
     }
 
-    setMeetingId(meetingId: string) {
-        this.meetingId = meetingId;
+    setUsername(username: string) {
+        sessionStorage.setItem("username", username);
     }
 
     setMeeting(meeting: Meeting) {
@@ -29,7 +25,7 @@ class PageState {
     }
 
     addInterval(newInterval: Interval) {
-        const intervals = this.userIntervals.get(this.getUsername()) || [];
+        const intervals = this.userIntervals[this.getUsername()] || [];
         intervals.push(newInterval);
         intervals.sort((a, b) => a.from - b.from);
 
@@ -44,7 +40,7 @@ class PageState {
             }
         }
 
-        this.userIntervals.set(this.getUsername(), updatedIntervals);
+        this.userIntervals[this.getUsername()] = updatedIntervals;
 
         console.log("Updated page state after inserting interval", newInterval, this);
         return updatedIntervals;
@@ -158,6 +154,5 @@ class MeetingPageController implements Controller {
     }
 }
 
-// new Application().run();
 new MeetingPageController(new PageState(), new MeetingClient(new RestClient()), new AppNavigator())
     .onLoad();

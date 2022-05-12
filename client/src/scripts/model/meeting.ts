@@ -1,13 +1,7 @@
 import {Interval} from "./interval";
 
-export class Meeting {
+export interface Meeting {
     id: string;
-    userIntervals: Map<String, Interval[]>;
+    userIntervals: Record<string, Interval[]>;
     intersections: [Interval];
-
-    constructor(id: string, userIntervals: Map<String, Interval[]>, intersections: [Interval]) {
-        this.id = id;
-        this.userIntervals = userIntervals;
-        this.intersections = intersections;
-    }
 }
