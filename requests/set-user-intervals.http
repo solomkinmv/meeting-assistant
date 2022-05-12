@@ -1,0 +1,11 @@
+PUT http://localhost:8080/api/meetings/1/intervals/user1
+Content-Type: application/json
+
+{
+  "intervals": [
+    {
+      "from": 1652214240000,
+      "to": 1652300640000
+    }
+  ]
+}
