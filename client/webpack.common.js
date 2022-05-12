@@ -1,6 +1,16 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const minifyOptions = {
+    collapseWhitespace: true,
+    keepClosingSlash: true,
+    removeComments: true,
+    removeRedundantAttributes: true,
+    removeScriptTypeAttributes: true,
+    removeStyleLinkTypeAttributes: true,
+    useShortDoctype: false // the only difference with default
+};
+
 module.exports = {
     entry: {
         index: './src/scripts/index.ts',
@@ -11,19 +21,22 @@ module.exports = {
             hash: true,
             template: './src/template/index.html',
             filename: './index.html',
-            chunks: ['index']
+            chunks: ['index'],
+            minify: minifyOptions
         }),
         new HtmlWebpackPlugin({
             hash: true,
             template: './src/template/meeting.html',
             filename: './meeting.html',
-            chunks: ['meetingAssistant']
+            chunks: ['meetingAssistant'],
+            minify: minifyOptions
         }),
         new HtmlWebpackPlugin({
             hash: true,
             template: './src/template/404.html',
             filename: './404.html',
-            chunks: []
+            chunks: [],
+            minify: minifyOptions
         })
     ],
     output: {
