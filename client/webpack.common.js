@@ -2,7 +2,6 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
     entry: {
         index: './src/scripts/index.ts',
         meetingAssistant: './src/scripts/meeting-assistant.ts'
@@ -33,22 +32,6 @@ module.exports = {
         publicPath: '/',
         clean: true,
     },
-    // Enable sourcemaps for debugging webpack's output.
-    devtool: "inline-source-map",
-    devServer: {
-        static: './dist',
-        historyApiFallback: {
-            rewrites: [
-                {from: /^\/meeting\//, to: '/meeting.html'},
-                {from: /^\/404$/, to: '/404.html'}
-            ]
-        },
-        proxy: {
-            '/api': {
-                target: 'http://localhost:8080'
-            }
-        }
-    },
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
         extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
@@ -66,5 +49,4 @@ module.exports = {
             }
         ],
     },
-    // Other options...
 };
