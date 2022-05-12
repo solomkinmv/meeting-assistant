@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const EnvironmentPlugin = require('webpack/lib/EnvironmentPlugin');
 
 module.exports = {
     mode: 'development',
@@ -26,9 +25,6 @@ module.exports = {
             template: './src/template/404.html',
             filename: './404.html',
             chunks: []
-        }),
-        new EnvironmentPlugin({
-            MEETING_ASSISTANT_API_URL: 'http://localhost:8080',
         })
     ],
     output: {
@@ -47,11 +43,11 @@ module.exports = {
                 {from: /^\/404$/, to: '/404.html'}
             ]
         },
-        // proxy: {
-        //     '/api': {
-        //         target: process.env.MEETING_ASSISTANT_API_URL
-        //     }
-        // }
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8080'
+            }
+        }
     },
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
