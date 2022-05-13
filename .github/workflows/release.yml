@@ -52,6 +52,7 @@ jobs:
       - name: Build client and push to backend resources
         run: |
           cd client
+          npm install
           npm run deploy
 
       - name: Make release
