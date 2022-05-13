@@ -5,9 +5,9 @@ import {Controller} from "./controller/controller";
 import {AppNavigator} from "./app-navigator";
 
 class PageState {
-    meetingId: string;
+    public meetingId: string;
     userIntervals: Record<string, Interval[]>;
-    intersections: Array<Interval>;
+    intersections: [Interval];
 
     getUsername(): string {
         return sessionStorage.getItem("username");
@@ -49,14 +49,14 @@ class PageState {
 }
 
 class MeetingPageController implements Controller {
-    pageState: PageState;
-    meetingClient: MeetingClient;
-    navigator: AppNavigator;
-    inputIntervalFrom: HTMLInputElement;
-    inputIntervalTo: HTMLInputElement;
-    inputUsername: HTMLInputElement;
-    intervalsBlock: HTMLElement;
-    button: HTMLElement;
+    private pageState: PageState;
+    private meetingClient: MeetingClient;
+    private navigator: AppNavigator;
+    private inputIntervalFrom: HTMLInputElement;
+    private inputIntervalTo: HTMLInputElement;
+    private inputUsername: HTMLInputElement;
+    private intervalsBlock: HTMLElement;
+    private button: HTMLElement;
 
     constructor(pageState: PageState, meetingClient: MeetingClient, navigator: AppNavigator) {
         this.pageState = pageState;
@@ -104,7 +104,7 @@ class MeetingPageController implements Controller {
     setName(username: string) {
         this.pageState.setUsername(username);
         this.inputUsername.value = username;
-        console.log("Username: ", username);
+        console.log("Setting username ", username);
     }
 
     addInterval() {
