@@ -32,6 +32,11 @@ jobs:
           distribution: 'adopt'
           cache: maven
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
       - name: Configure Git user
         run: |
           git config user.email "actions@github.com"
@@ -42,6 +47,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build client and push to backend resources
+        run: npm run deploy
 
       - name: Make release
         run: ./mvnw -B release:prepare release:perform

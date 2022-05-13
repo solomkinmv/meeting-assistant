@@ -2,7 +2,7 @@ import {Interval} from "./model/interval";
 import {Meeting} from "./model/meeting";
 
 export class MeetingClient {
-    restClient: RestClient;
+    private restClient: RestClient;
 
     constructor(restClient: RestClient) {
         this.restClient = restClient;
