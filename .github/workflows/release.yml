@@ -45,3 +45,8 @@ jobs:
 
       - name: Make release
         run: ./mvnw -B release:prepare release:perform
+
+      - name: Upload to Codecov
+        uses: codecov/codecov-action@v3.1.0
+        with:
+          file: ./target/site/jacoco/jacoco.xml
