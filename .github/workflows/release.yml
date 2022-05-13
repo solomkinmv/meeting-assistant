@@ -50,7 +50,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build client and push to backend resources
-        run: npm run deploy
+        run: |
+          cd client
+          npm run deploy
 
       - name: Make release
         run: ./mvnw -B release:prepare release:perform
