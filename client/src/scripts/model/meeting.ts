@@ -1,7 +1,7 @@
-import {Interval} from "./interval";
+import {Interval} from "./interval"
 
 export interface Meeting {
-    id: string;
-    userIntervals: Record<string, Interval[]>;
-    intersections: [Interval];
+    id: string
+    userIntervals: Record<string, Interval[]>
+    intersections: [Interval]
 }

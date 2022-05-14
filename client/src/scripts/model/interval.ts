@@ -1,9 +1,9 @@
 export class Interval {
-    from: number;
-    to: number;
+    from: number
+    to: number
 
     constructor(from: number, to: number) {
-        this.from = from;
-        this.to = to;
+        this.from = from
+        this.to = to
     }
 }

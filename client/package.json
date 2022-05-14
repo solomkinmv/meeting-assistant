@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "meeting-service-client",
   "version": "0.0.1",
   "description": "",
   "private": true,
@@ -20,8 +20,5 @@
     "build": "webpack --config webpack.prod.js",
     "copy-to-backend-resources": "yes | cp -r ./dist/* ../src/main/resources/public/",
     "deploy": "npm run build && npm run copy-to-backend-resources"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  }
 }

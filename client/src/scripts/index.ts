@@ -1,6 +1,6 @@
-import {Controller} from "./controller/controller";
-import {MeetingClient, RestClient} from "./meeting-client";
-import {AppNavigator} from "./app-navigator";
+import {Controller} from "./controller/controller"
+import {MeetingClient, RestClient} from "./meeting-client"
+import {AppNavigator} from "./app-navigator"
 
 class MainPageController implements Controller {
     meetingClient: MeetingClient
@@ -15,18 +15,18 @@ class MainPageController implements Controller {
 
     public onLoad() {
         console.debug("Loading main controller")
-        this.newMeetingButton = document.getElementById("new-meeting-button");
+        this.newMeetingButton = document.getElementById("new-meeting-button")
 
-        this.newMeetingButton.onclick = this.onNewMeetingButtonClick.bind(this);
+        this.newMeetingButton.onclick = this.onNewMeetingButtonClick.bind(this)
     }
 
     private async onNewMeetingButtonClick() {
         console.debug("Clicked new meeting button")
         try {
-            const meetingId = await this.meetingClient.createMeeting();
-            this.navigator.openMeetingPage(meetingId);
+            const meetingId = await this.meetingClient.createMeeting()
+            this.navigator.openMeetingPage(meetingId)
         } catch (e) {
-            console.error("Failed to create meeting", e);
+            console.error("Failed to create meeting", e)
         }
     }
 
@@ -34,4 +34,4 @@ class MainPageController implements Controller {
 
 new MainPageController(new MeetingClient(new RestClient()),
     new AppNavigator())
-    .onLoad();
+    .onLoad()
