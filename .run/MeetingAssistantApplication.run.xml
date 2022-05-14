@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="MeetingAssistantApplication" type="SpringBootApplicationConfigurationType"
+                   factoryName="Spring Boot">
+        <option name="ACTIVE_PROFILES"/>
+        <module name="meeting-assistant"/>
+        <option name="SPRING_BOOT_MAIN_CLASS" value="in.solomk.meeting.assistant.MeetingAssistantApplication"/>
+        <method v="2">
+            <option name="Make" enabled="true"/>
+        </method>
+    </configuration>
+</component>
