@@ -156,6 +156,20 @@ class MeetingPageController implements Controller {
         this.renderIntervals()
     }
 
+    private static formatDateInterval(interval: Interval): string {
+        return MeetingPageController.formatDate(interval.from) + ' - ' + MeetingPageController.formatDate(interval.to)
+    }
+
+    private static formatDate(date: number): string {
+        return new Date(date).toLocaleDateString([], {
+            day: '2-digit',
+            month: 'numeric',
+            year: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        })
+    }
+
     private renderIntervals() {
         this.intervalsBlock.innerHTML = ''
 
@@ -175,7 +189,7 @@ class MeetingPageController implements Controller {
                 const intervalRowElement = document.createElement('tr')
 
                 const intervalElement = document.createElement('td')
-                intervalElement.innerText = new Date(interval.from).toLocaleString() + ' - ' + new Date(interval.to).toLocaleString()
+                intervalElement.innerText = MeetingPageController.formatDateInterval(interval)
                 intervalRowElement.appendChild(intervalElement)
 
                 if (username === this.meetingService.getUsername()) {
@@ -199,6 +213,7 @@ class MeetingPageController implements Controller {
             this.intervalsBlock.appendChild(intervalElement)
         }
     }
+
 }
 
 const meetingClient = new MeetingClient(new RestClient());

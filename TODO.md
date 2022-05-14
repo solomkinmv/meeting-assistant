@@ -12,6 +12,7 @@ APP:
 CLIENT:
 
 * Show current user intervals on top of others
+* Don't print debug and trace logs in production mode
 
 PROJECT:
 
