@@ -168,11 +168,13 @@ class MeetingPageController implements Controller {
             usernameElement.innerText = username
             this.intervalsBlock.appendChild(usernameElement)
 
+            const intervalsTable = document.createElement('table')
+            this.intervalsBlock.appendChild(intervalsTable)
             for (let i = 0; i < perUserIntervals.length; i++) {
                 const interval = perUserIntervals[i]
-                const intervalRowElement = document.createElement('div')
+                const intervalRowElement = document.createElement('tr')
 
-                const intervalElement = document.createElement('div')
+                const intervalElement = document.createElement('td')
                 intervalElement.innerText = new Date(interval.from).toLocaleString() + ' - ' + new Date(interval.to).toLocaleString()
                 intervalRowElement.appendChild(intervalElement)
 
