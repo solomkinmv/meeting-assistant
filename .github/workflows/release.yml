@@ -49,16 +49,49 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build client and push to backend resources
+      - name: Increment service version for release
+        run: |
+          ./mvnw build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
+          VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          git commit -am "[CI] prepare release v$VERSION"    
+          git tag "v$VERSION" 
+          git push --atomic origin main "v$VERSION"    
+
+      - name: Build client and copy to backend resources
         run: |
           cd client
           npm install
           npm run deploy
 
-      - name: Make release
-        run: ./mvnw -B release:prepare release:perform
+      - name: Build docker container and push
+        run: |
+          ./mvnw -B package docker:build docker:push
 
-      - name: Upload to Codecov
+      - name: Increment service version for next development iteration
+        run: |
+          ./mvnw build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
+          git add ./\pom.xml
+          git commit -m "[CI] prepare for next development iteration"    
+          git push origin main
+
+      - name: DigitalOcean App Platform deployment
+        uses: digitalocean/app_action@v1.1.2
+        with:
+          app_name: meeting-assistant
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          images: '[
+                     {
+                       "name": "solomkinmv-meeting-assistant",
+                       "image": {
+                         "registry_type": "DOCKER_HUB",
+                         "registry": "solomkinmv",
+                         "repository": "meeting-assistant",
+                         "tag": "${{ env.VERSION }}"
+                       }
+                     }
+                   ]'
+
+      - name: Upload test coverage to Codecov
         uses: codecov/codecov-action@v3.1.0
         with:
           file: ./target/site/jacoco/jacoco.xml

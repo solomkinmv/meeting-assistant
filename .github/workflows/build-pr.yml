@@ -35,7 +35,7 @@ jobs:
     - name: Build with Maven
       run: mvn -B package
 
-    - name: Upload to Codecov
+    - name: Upload test coverage to Codecov
       uses: codecov/codecov-action@v3.1.0
       with:
         file: ./target/site/jacoco/jacoco.xml
