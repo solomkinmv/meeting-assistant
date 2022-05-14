@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - '**.js'
+      - '**.ts'
       - '**.java'
       - '**.css'
       - '**.html'
@@ -53,6 +54,7 @@ jobs:
         run: |
           ./mvnw build-helper:parse-version versions:set -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
           VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           git commit -am "[CI] prepare release v$VERSION"    
           git tag "v$VERSION" 
           git push --atomic origin main "v$VERSION"    
