@@ -3,21 +3,22 @@ import {MeetingClient, RestClient} from "./meeting-client"
 import {AppNavigator} from "./app-navigator"
 
 class MainPageController implements Controller {
-    meetingClient: MeetingClient
-    navigator: AppNavigator
-    newMeetingButton: HTMLElement
+    private readonly meetingClient: MeetingClient
+    private readonly navigator: AppNavigator
+    private readonly newMeetingButton: HTMLElement
 
     constructor(meetingClient: MeetingClient, navigator: AppNavigator) {
+        console.debug("Loading main controller")
         this.meetingClient = meetingClient
         this.navigator = navigator
+
+        this.newMeetingButton = document.getElementById("new-meeting-button") as HTMLButtonElement
+        this.newMeetingButton.onclick = this.onNewMeetingButtonClick.bind(this)
+
         console.debug("Created main controller", meetingClient, navigator)
     }
 
     public onLoad() {
-        console.debug("Loading main controller")
-        this.newMeetingButton = document.getElementById("new-meeting-button")
-
-        this.newMeetingButton.onclick = this.onNewMeetingButtonClick.bind(this)
     }
 
     private async onNewMeetingButtonClick() {

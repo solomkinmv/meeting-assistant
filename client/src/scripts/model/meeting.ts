@@ -1,7 +1,7 @@
 import {Interval} from "./interval"
 
 export interface Meeting {
-    id: string
-    userIntervals: Record<string, Interval[]>
-    intersections: [Interval]
+    readonly id: string
+    readonly userIntervals: Record<string, ReadonlyArray<Interval>>
+    readonly intersections: ReadonlyArray<Interval>
 }

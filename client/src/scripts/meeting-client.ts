@@ -14,7 +14,7 @@ export class MeetingClient {
         return meeting['id']
     }
 
-    async setIntervals(meetingId: string, username: string, intervals: Interval[]): Promise<Meeting> {
+    async setIntervals(meetingId: string, username: string, intervals: ReadonlyArray<Interval>): Promise<Meeting> {
         console.debug('Setting intervals', meetingId, username, intervals)
         const meeting = await this.restClient.put(`/api/meetings/${meetingId}/intervals/${username}`,
             {intervals: intervals})

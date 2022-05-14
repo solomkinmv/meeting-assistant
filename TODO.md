@@ -9,9 +9,13 @@ APP:
 * Make general 404 page and not found meeting page
 * Support explicit time zones
 
+CLIENT:
+
+* Show current user intervals on top of others
+
 PROJECT:
 
 * Add .editorconfig
 * Configure typescript linter
-    * Warn about redundant semicolons
+  * Warn about redundant semicolons
 * Configure java linter
