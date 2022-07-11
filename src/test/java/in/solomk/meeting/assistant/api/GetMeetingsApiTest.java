@@ -18,7 +18,9 @@ public class GetMeetingsApiTest extends BaseFuncTest {
     void returns404ForAbsentMeeting() {
         testClient.getMeeting("unknown-meeting-id")
                   .expectStatus()
-                  .isNotFound();
+                  .isNotFound()
+                  .expectBody()
+                  .isEmpty();
     }
 
     @Test

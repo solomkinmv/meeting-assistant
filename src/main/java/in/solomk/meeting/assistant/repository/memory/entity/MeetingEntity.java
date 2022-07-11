@@ -1,4 +1,4 @@
-package in.solomk.meeting.assistant.repository.entity;
+package in.solomk.meeting.assistant.repository.memory.entity;
 
 import in.solomk.meeting.assistant.service.model.Meeting;
 
