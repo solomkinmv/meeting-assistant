@@ -4,16 +4,17 @@ import in.solomk.meeting.assistant.exception.PersistenceException;
 import in.solomk.meeting.assistant.service.model.Interval;
 import in.solomk.meeting.assistant.service.model.Meeting;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@Slf4j
 @Component
 @AllArgsConstructor
 public class MeetingService {
 
-    private final MeetingIdGenerator idGenerator;
     private final MeetingRepository repository;
     private final IntersectionEnricher intersectionEnricher;
 
@@ -23,7 +24,9 @@ public class MeetingService {
     }
 
     public Mono<Meeting> create() {
-        return repository.saveMeeting(Meeting.empty(idGenerator.generateId()));
+        log.info("Creating a new meeting");
+        return repository.saveMeeting(Meeting.empty())
+                         .log("created");
     }
 
     public Mono<Meeting> setIntervalsForUser(String meetingId, String username, List<Interval> intervals) {

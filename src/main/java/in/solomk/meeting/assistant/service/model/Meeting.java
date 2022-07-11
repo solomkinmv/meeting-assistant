@@ -1,5 +1,7 @@
 package in.solomk.meeting.assistant.service.model;
 
+import lombok.With;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +9,7 @@ import java.util.Map;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 
-public record Meeting(String id, Map<String, List<Interval>> userIntervals, List<Interval> intersections) {
+public record Meeting(@With String id, Map<String, List<Interval>> userIntervals, List<Interval> intersections) {
 
     public Meeting(String id, Map<String, List<Interval>> userIntervals) {
         this(id, userIntervals, emptyList());
@@ -15,6 +17,10 @@ public record Meeting(String id, Map<String, List<Interval>> userIntervals, List
 
     public static Meeting empty(String id) {
         return new Meeting(id, emptyMap(), emptyList());
+    }
+
+    public static Meeting empty() {
+        return new Meeting(null, emptyMap(), emptyList());
     }
 
     public Meeting withUserIntervals(String username, List<Interval> intervals) {
