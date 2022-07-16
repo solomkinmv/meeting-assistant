@@ -16,3 +16,5 @@ target/
 ### Client ###
 /client/node_modules
 /client/dist
+/react-client/node_modules
+/react-client/build
