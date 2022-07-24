@@ -12,10 +12,8 @@ function App() {
                     paddingBottom: "1rem",
                 }}
             >
-                <Link to="/meeting">Create meeting</Link> |{" "}
-                <Link to="/404">Not Found</Link> | {" "}
-                <Link to="/invoices">Invoices</Link> |{" "}
-                <Link to="/expenses">Expenses</Link>
+                <Link to="/">Home</Link> | {" "}
+                <Link to="/meeting">About</Link>
             </nav>
             <Outlet/>
         </div>

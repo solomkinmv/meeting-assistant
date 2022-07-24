@@ -4,11 +4,8 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import './index.css';
 import App from './components/app/App';
 import reportWebVitals from './reportWebVitals';
-import Meeting from "./components/meeting/Meeting";
-import NotFound from "./components/not-found/NotFound";
-import Expenses from "./components/app/expenses";
-import Invoices from "./components/app/invoices";
-import Invoice from "./components/app/invoice";
+import Home from "./components/home/home";
+import MeetingComponent from "./components/meeting/meeting-component";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -18,23 +15,14 @@ root.render(
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<App/>}>
-                    <Route path='/meeting' element={<Meeting/>}/>
-                    <Route path='/404' element={<NotFound/>}/>
-                    <Route path="expenses" element={<Expenses/>}/>
-                    <Route path="invoices" element={<Invoices/>}>
-                        <Route index element={
-                            <main style={{padding: "1rem"}}>
-                                <p>Select an invoice</p>
-                            </main>
-                        }
-                        />
-                        <Route path=":invoiceId" element={<Invoice/>}/>
-                    </Route>
+                    <Route path="/" element={<Home/>}/>
+                    <Route path='/meeting/:meetingId' element={<MeetingComponent/>}/>
+
                     <Route
                         path="*"
                         element={
                             <main style={{padding: "1rem"}}>
-                                <p>There's nothing here!</p>
+                                <p>No such page exist</p>
                             </main>
                         }
                     />
