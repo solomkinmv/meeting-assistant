@@ -5,6 +5,7 @@ import in.solomk.meeting.assistant.api.handler.GetMeetingHandler;
 import in.solomk.meeting.assistant.api.handler.UpdateIntervalsHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
@@ -35,7 +36,20 @@ public class RouteConfiguration {
     }
 
     @Bean
+    @Profile("mongo")
     CorsWebFilter corsFilter() {
         return new CorsWebFilter(exchange -> new CorsConfiguration().applyPermitDefaultValues());
+    }
+
+    @Bean
+    @Profile("!mongo")
+    CorsWebFilter permissiveCorsFilter() {
+        return new CorsWebFilter(exchange -> {
+            CorsConfiguration config = new CorsConfiguration();
+            config.addAllowedOrigin("*");
+            config.addAllowedHeader("*");
+            config.addAllowedMethod("*");
+            return config;
+        });
     }
 }
