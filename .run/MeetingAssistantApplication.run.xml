@@ -1,18 +1,4 @@
 <component name="ProjectRunConfigurationManager">
-    <configuration default="false" name="Meeting Assistant Mongo" type="SpringBootApplicationConfigurationType"
-                   factoryName="Spring Boot">
-        <option name="ACTIVE_PROFILES" value="mongo"/>
-        <envs>
-            <env name="SPRING_DATA_MONGODB_DATABASE" value="meetings"/>
-            <env name="SPRING_DATA_MONGODB_URI"
-                 value="mongodb+srv://meetings-service:XXX@meetos.zi1xj.mongodb.net/?retryWrites=true&amp;w=majority"/>
-        </envs>
-        <module name="meeting-assistant"/>
-        <option name="SPRING_BOOT_MAIN_CLASS" value="in.solomk.meeting.assistant.MeetingAssistantApplication"/>
-        <method v="2">
-            <option name="Make" enabled="true"/>
-        </method>
-    </configuration>
     <configuration default="false" name="Meeting Assistant In-Memory" type="SpringBootApplicationConfigurationType"
                    factoryName="Spring Boot">
         <option name="ACTIVE_PROFILES" value="in-memory"/>

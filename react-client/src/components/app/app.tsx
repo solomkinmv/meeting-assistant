@@ -1,10 +1,10 @@
 import React from 'react';
 import {Link, Outlet} from "react-router-dom";
-import './App.css';
+import './app.css';
 
 function App() {
     return (
-        <div className="App">
+        <div className="app">
             <h1>Meeting Assistant</h1>
             <nav
                 style={{
