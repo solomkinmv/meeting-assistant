@@ -12,7 +12,7 @@ export default function MeetingComponent() {
     const meetingService = useMeetingService();
     const [intervalStart, setIntervalStart] = useState("");
     const [intervalEnd, setIntervalEnd] = useState("");
-    const [currentUsername, setUsername] = useState("");
+    const [currentUsername, setUsername] = useState(sessionStorage.getItem("username") || "");
     const meetingId = params.meetingId ?? "";
     const [meeting, setMeeting] = useState<Meeting>({
         id: meetingId,
@@ -41,6 +41,12 @@ export default function MeetingComponent() {
         setMeeting(updatedMeeting);
     }
 
+    function onUsernameChanged(event: React.ChangeEvent<HTMLInputElement>) {
+        const value = event.target.value;
+        setUsername(value);
+        sessionStorage.setItem("username", value);
+    }
+
     const fetchMeeting = useCallback(async () => {
         console.info("Fetching meeting", meetingId);
         try {
@@ -63,7 +69,7 @@ export default function MeetingComponent() {
             <h1>Meeting Page Here for meeting {meetingId}</h1>
             <label htmlFor="name">Username:</label>
             <input autoComplete="off" placeholder="username" type="text" value={currentUsername}
-                   onChange={event => setUsername(event.target.value)}/>
+                   onChange={onUsernameChanged}/>
 
             <div id="intervals">
                 <h2>Intervals:</h2>
