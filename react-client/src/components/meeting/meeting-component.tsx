@@ -3,14 +3,16 @@ import {useNavigate, useParams} from "react-router-dom";
 import {meetingClient} from "../../client/meeting-client";
 import {Meeting} from "../../client/model/meeting";
 import {Interval} from "../../client/model/interval";
+import {useMeetingService} from "./meeting-service";
 
 export default function MeetingComponent() {
     const params = useParams();
     const navigate = useNavigate();
     const client = meetingClient();
+    const meetingService = useMeetingService();
     const [intervalStart, setIntervalStart] = useState("");
     const [intervalEnd, setIntervalEnd] = useState("");
-    const [username, setUsername] = useState("");
+    const [currentUsername, setUsername] = useState("");
     const meetingId = params.meetingId ?? "";
     const [meeting, setMeeting] = useState<Meeting>({
         id: meetingId,
@@ -19,11 +21,22 @@ export default function MeetingComponent() {
     } as Meeting);
 
     async function addInterval() {
-        console.log(username, intervalStart, intervalEnd);
+        console.log(currentUsername, intervalStart, intervalEnd);
         const newInterval = new Interval(parseDate(intervalStart), parseDate(intervalEnd));
+        if (newInterval.from >= newInterval.to) {
+            alert("Invalid interval")
+            return
+        }
 
-        const updatedMeeting = await client.setIntervals(meetingId, username,
-            (meeting.userIntervals[username] || []).concat(newInterval))
+        const updatedIntervals = meetingService.addInterval(meeting, currentUsername, newInterval);
+        const updatedMeeting = await client.setIntervals(meetingId, currentUsername, updatedIntervals);
+        console.log("Updated meeting to", updatedMeeting);
+        setMeeting(updatedMeeting);
+    }
+
+    async function onDelete(index: number) {
+        const updatedIntervals = meetingService.filterUserIntervals(meeting, currentUsername, index);
+        const updatedMeeting = await client.setIntervals(meetingId, currentUsername, updatedIntervals);
         console.log("Updated meeting to", updatedMeeting);
         setMeeting(updatedMeeting);
     }
@@ -49,7 +62,7 @@ export default function MeetingComponent() {
         <div>
             <h1>Meeting Page Here for meeting {meetingId}</h1>
             <label htmlFor="name">Username:</label>
-            <input autoComplete="off" placeholder="username" type="text" value={username}
+            <input autoComplete="off" placeholder="username" type="text" value={currentUsername}
                    onChange={event => setUsername(event.target.value)}/>
 
             <div id="intervals">
@@ -63,10 +76,14 @@ export default function MeetingComponent() {
                                 <h3>{username}</h3>
                                 <table>
                                     <tbody>
-                                    {intervals.map(interval => {
+                                    {intervals.map((interval, index) => {
                                         return (<tr key={interval.from}>
                                             <td>{formatDate(interval.from)}</td>
                                             <td>{formatDate(interval.to)}</td>
+                                            <td>
+                                                {username === currentUsername ?
+                                                    <button onClick={() => onDelete(index)}>Delete</button> : null}
+                                            </td>
                                         </tr>)
                                     })}
                                     </tbody>

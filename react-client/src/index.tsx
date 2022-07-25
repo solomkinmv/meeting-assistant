@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import './index.css';
-import App from './components/app/App';
 import reportWebVitals from './reportWebVitals';
 import Home from "./components/home/home";
 import MeetingComponent from "./components/meeting/meeting-component";
+import App from "./components/app/app";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
