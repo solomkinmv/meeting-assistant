@@ -11,7 +11,7 @@
 
     <groupId>in.solomk</groupId>
     <artifactId>meeting-assistant</artifactId>
-    <version>0.0.22</version>
+    <version>0.0.23-SNAPSHOT</version>
 
     <name>meeting-assistant</name>
     <description>meeting-assistant</description>
