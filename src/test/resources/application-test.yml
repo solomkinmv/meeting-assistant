@@ -2,3 +2,7 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: true
+
+logging:
+  level:
+    root: DEBUG

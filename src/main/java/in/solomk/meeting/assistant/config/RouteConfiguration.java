@@ -22,16 +22,12 @@ public class RouteConfiguration {
                                                   CreateMeetingHandler createMeetingHandler,
                                                   UpdateIntervalsHandler updateIntervalsHandler) {
         HandlerFunction<ServerResponse> indexPage = (req) -> ServerResponse.ok().bodyValue(new ClassPathResource("public/index.html"));
-        HandlerFunction<ServerResponse> meetingPage = (req) -> ServerResponse.ok().bodyValue(new ClassPathResource("public/meeting.html"));
-        HandlerFunction<ServerResponse> notFoundPage = (req) -> ServerResponse.ok().bodyValue(new ClassPathResource("public/404.html"));
         return RouterFunctions.route()
                               .GET("/api/meetings/{id}", getMeetingHandler)
                               .POST("/api/meetings/", createMeetingHandler)
                               .PUT("/api/meetings/{id}/intervals/{username}", updateIntervalsHandler)
-                              .GET("/", indexPage)
-                              .GET("/404", notFoundPage)
-                              .GET("/meeting/{meetingId}", meetingPage)
-                              .resources("/**", new ClassPathResource("/public/**"))
+                              .resources("/**", new ClassPathResource("/public/"))
+                              .GET("/**", indexPage)
                               .build();
     }
 
