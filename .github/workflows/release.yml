@@ -59,9 +59,10 @@ jobs:
 
       - name: Build client and copy to backend resources
         run: |
-          cd client
-          npm install
-          npm run deploy
+          cd react-client
+          npm run build
+          rm -rf ../src/main/resources/public/static/
+          \cp -r ./build/* ../src/main/resources/public/
 
       - name: Build docker container and push
         run: |
