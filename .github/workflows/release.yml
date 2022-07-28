@@ -60,6 +60,7 @@ jobs:
       - name: Build client and copy to backend resources
         run: |
           cd react-client
+          npm install
           npm run build
           rm -rf ../src/main/resources/public/static/
           \cp -r ./build/* ../src/main/resources/public/
