@@ -30,7 +30,7 @@ jobs:
                          "registry_type": "DOCKER_HUB",
                          "registry": "solomkinmv",
                          "repository": "meeting-assistant",
-                         "tag": "${{ GIT_TAG_NAME }}"
+                         "tag": "${{ env.GIT_TAG_NAME }}"
                        }
                      }
                    ]'
