@@ -62,6 +62,7 @@ export default function MeetingComponent() {
             .then(meeting => setMeeting(meeting!))
             // make sure to catch any error
             .catch(console.error);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
