@@ -26,6 +26,13 @@ class MeetingClient {
         return meeting
     }
 
+    async addInterval(meetingId: string, username: string, interval: Interval): Promise<Meeting> {
+        const meeting = await this.restClient.post(`${process.env.REACT_APP_MEETING_SERVICE_API_HOST}/api/meetings/${meetingId}/intervals/${username}`,
+            {interval: interval})
+        console.log('Received response on interval addition', meeting)
+        return meeting
+    }
+
     async getMeeting(meetingId: string): Promise<Meeting> {
         const url = `${process.env.REACT_APP_MEETING_SERVICE_API_HOST}/api/meetings/${meetingId}`;
         console.debug('Getting meeting', url)

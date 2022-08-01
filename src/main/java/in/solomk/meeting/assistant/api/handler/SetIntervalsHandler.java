@@ -5,7 +5,6 @@ import in.solomk.meeting.assistant.api.dto.request.IntervalRequest;
 import in.solomk.meeting.assistant.api.dto.response.MeetingResponse;
 import in.solomk.meeting.assistant.api.validation.IntersectionValidator;
 import in.solomk.meeting.assistant.service.MeetingService;
-import in.solomk.meeting.assistant.service.model.Meeting;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.HandlerFunction;
@@ -21,7 +20,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
 @AllArgsConstructor
-public class UpdateIntervalsHandler implements HandlerFunction<ServerResponse> {
+public class SetIntervalsHandler implements HandlerFunction<ServerResponse> {
 
     private final MeetingService meetingService;
     private final IntersectionValidator validator;

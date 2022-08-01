@@ -86,7 +86,27 @@ public class UpdateMeetingsApiTest extends BaseFuncTest {
                   .isOk()
                   .expectBody(MeetingResponse.class)
                   .isEqualTo(expectedMeetingResponse);
+    }
 
+    @Test
+    void addsIntervalForUser() {
+        String meetingId = createMeeting();
+        testClient.addIntervalForUser(meetingId, USER_1, intervalReq(100, 200))
+                  .expectStatus()
+                  .isOk()
+                  .expectBody(MeetingResponse.class)
+                  .isEqualTo(new MeetingResponse(meetingId,
+                                                 Map.of(USER_1, List.of(intervalRes(100, 200))),
+                                                 List.of(intervalRes(100, 200))));
+        testClient.addIntervalForUser(meetingId, USER_1, intervalReq(300, 400))
+                  .expectStatus()
+                  .isOk()
+                  .expectBody(MeetingResponse.class)
+                  .isEqualTo(new MeetingResponse(meetingId,
+                                                 Map.of(USER_1, List.of(intervalRes(100, 200),
+                                                                        intervalRes(300, 400))),
+                                                 List.of(intervalRes(100, 200),
+                                                         intervalRes(300, 400))));
     }
 
     private String createMeeting() {

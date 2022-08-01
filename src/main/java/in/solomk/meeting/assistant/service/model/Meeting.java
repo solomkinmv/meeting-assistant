@@ -5,6 +5,7 @@ import lombok.With;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -26,6 +27,13 @@ public record Meeting(@With String id, Map<String, List<Interval>> userIntervals
     public Meeting withUserIntervals(String username, List<Interval> intervals) {
         var copyUserIntervals = new HashMap<>(userIntervals);
         copyUserIntervals.put(username, intervals);
+        return new Meeting(id, copyUserIntervals, emptyList());
+    }
+
+    public Meeting withUserIntervals(String username, Function<List<Interval>, List<Interval>> mappingFunction) {
+        var copyUserIntervals = new HashMap<>(userIntervals);
+        var intervals = copyUserIntervals.getOrDefault(username, emptyList());
+        copyUserIntervals.put(username, mappingFunction.apply(intervals));
         return new Meeting(id, copyUserIntervals, emptyList());
     }
 
