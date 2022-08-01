@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -35,5 +38,34 @@ public class MeetingService {
                          .flatMap(repository::saveMeeting)
                          .map(intersectionEnricher::withIntersectionDetails)
                          .switchIfEmpty(Mono.error(new PersistenceException("Meeting %s is missing in the database", meetingId)));
+    }
+
+    public Mono<Meeting> addIntervalForUser(String meetingId, String username, Interval newInterval) {
+        return repository.getMeetingById(meetingId)
+                         .map(meeting -> meeting.withUserIntervals(username, (oldIntervals) -> mergeIntervals(oldIntervals, newInterval)))
+                         .flatMap(repository::saveMeeting)
+                         .map(intersectionEnricher::withIntersectionDetails)
+                         .switchIfEmpty(Mono.error(new PersistenceException("Meeting %s is missing in the database", meetingId)));
+    }
+
+    private List<Interval> mergeIntervals(List<Interval> oldIntervals, Interval newInterval) {
+        if (oldIntervals.isEmpty()) {
+            return Collections.singletonList(newInterval);
+        }
+        List<Interval> intervalsCopy = new ArrayList<>(oldIntervals);
+        intervalsCopy.add(newInterval);
+        intervalsCopy.sort(Comparator.comparingLong(Interval::from));
+
+        List<Interval> result = new ArrayList<>();
+        result.add(intervalsCopy.get(0));
+        for (int iCopy = 1, iResult = 0; iCopy < intervalsCopy.size(); iCopy++) {
+            if (result.get(iResult).to() >= intervalsCopy.get(iCopy).from()) {
+                result.set(iResult, new Interval(result.get(iResult).from(), Math.max(result.get(iResult).to(), intervalsCopy.get(iCopy).to())));
+            } else {
+                result.add(intervalsCopy.get(iCopy));
+                iResult++;
+            }
+        }
+        return result;
     }
 }

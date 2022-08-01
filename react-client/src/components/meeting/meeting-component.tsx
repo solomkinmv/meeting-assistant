@@ -28,8 +28,7 @@ export default function MeetingComponent() {
             return
         }
 
-        const updatedIntervals = meetingService.addInterval(meeting, currentUsername, newInterval);
-        const updatedMeeting = await client.setIntervals(meetingId, currentUsername, updatedIntervals);
+        const updatedMeeting = await client.addInterval(meetingId, currentUsername, newInterval);
         console.log("Updated meeting to", updatedMeeting);
         setMeeting(updatedMeeting);
     }

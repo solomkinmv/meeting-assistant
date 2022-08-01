@@ -1,6 +1,7 @@
 package in.solomk.meeting.assistant.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import in.solomk.meeting.assistant.api.dto.request.AddIntervalsRequest;
 import in.solomk.meeting.assistant.api.dto.request.BatchIntervalsRequest;
 import in.solomk.meeting.assistant.api.dto.request.IntervalRequest;
 import in.solomk.meeting.assistant.api.dto.response.MeetingResponse;
@@ -76,6 +77,13 @@ public class MeetingsTestClient {
         return webTestClient.put()
                             .uri("/api/meetings/{id}/intervals/{username}", meetingId, username)
                             .bodyValue(new BatchIntervalsRequest(intervals))
+                            .exchange();
+    }
+
+    public WebTestClient.ResponseSpec addIntervalForUser(String meetingId, String username, IntervalRequest interval) {
+        return webTestClient.post()
+                            .uri("/api/meetings/{id}/intervals/{username}", meetingId, username)
+                            .bodyValue(new AddIntervalsRequest(interval))
                             .exchange();
     }
 }
