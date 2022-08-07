@@ -151,18 +151,16 @@ export default function MeetingScheduler() {
             >
                 <View
                     type="day"
-                    startDayHour={10}
-                    endDayHour={22}
                 />
                 <View
                     type="week"
-                    startDayHour={10}
-                    endDayHour={22}
                 />
                 <View type="month"/>
-                <View type="agenda"/>
+                <View type="agenda"
+                      agendaDuration={31}
+                />
                 <Editing
-                    allowDragging={false}
+                    allowDragging={true}
                     allowTimeZoneEditing={true}
                 />
             </Scheduler>
