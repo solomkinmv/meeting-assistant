@@ -11,6 +11,7 @@ import {
     Appointment,
     AppointmentAddingEvent,
     AppointmentDeletingEvent,
+    AppointmentFormOpeningEvent,
     AppointmentUpdatingEvent
 } from "devextreme/ui/scheduler";
 
@@ -40,8 +41,7 @@ export default function MeetingScheduler() {
             startDate: new Date(interval.from),
             endDate: new Date(interval.to),
             text: username,
-            disabled: disabled,
-            description: `${formatDate(interval.from)} - ${formatDate(interval.to)}`
+            disabled: disabled
         }
     }
 
@@ -111,6 +111,30 @@ export default function MeetingScheduler() {
         sessionStorage.setItem("username", value);
     }
 
+    function customizeAppointmentForm(e: AppointmentFormOpeningEvent) {
+        const form = e.form;
+        const mainGroup = form.itemOption('mainGroup');
+        let mainGroupItems: any[] = mainGroup.items;
+        mainGroupItems.forEach((item: any) => {
+            if (item.dataField === 'description' || item.dataField === 'text' || item.itemType === 'empty') {
+                item.visible = false;
+                console.log("Hiding description", item);
+            }
+            if (item.itemType === 'group') {
+                item.items.forEach((subItem: any) => {
+                    if (subItem.dataField === 'repeat') {
+                        subItem.visible = false;
+                    }
+                });
+            }
+            return item;
+        })
+
+        form.repaint();
+
+        console.log("Appointment form opening", e);
+    }
+
     const fetchMeeting = useCallback(async () => {
         console.info("Fetching meeting", meetingId);
         try {
@@ -150,6 +174,8 @@ export default function MeetingScheduler() {
                        onAppointmentDeleting={onAppointmentDeleting}
                        onAppointmentUpdating={onAppointmentUpdating}
                        defaultCurrentView="week"
+                       showCurrentTimeIndicator={true}
+                       onAppointmentFormOpening={customizeAppointmentForm}
             >
                 <View
                     type="day"

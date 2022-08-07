@@ -9,11 +9,15 @@ on:
       - main
     paths:
       - '**.js'
+      - '**.jsx'
+      - '**.ts'
+      - '**.tsx'
       - '**.java'
       - '**.css'
       - '**.html'
       - '**.yml'
       - '**.yaml'
+      - '**.json'
       - '**/pom.xml'
       - '**.properties'
       - '**Dockerfile'
