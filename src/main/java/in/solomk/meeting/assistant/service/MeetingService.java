@@ -48,6 +48,24 @@ public class MeetingService {
                          .switchIfEmpty(Mono.error(new PersistenceException("Meeting %s is missing in the database", meetingId)));
     }
 
+    public Mono<Meeting> deleteIntervalsForUser(String meetingId, String username, Interval interval) {
+        return repository.getMeetingById(meetingId)
+                         .map(meeting -> meeting.withUserIntervals(username, (oldIntervals) -> removeInterval(oldIntervals, interval)))
+                         .flatMap(repository::saveMeeting)
+                         .map(intersectionEnricher::withIntersectionDetails)
+                         .switchIfEmpty(Mono.error(new PersistenceException("Meeting %s is missing in the database", meetingId)));
+    }
+
+    private List<Interval> removeInterval(List<Interval> oldIntervals, Interval intervalToRemove) {
+        List<Interval> newIntervals = new ArrayList<>();
+        for (Interval oldInterval : oldIntervals) {
+            if (!oldInterval.intersect(intervalToRemove)) {
+                newIntervals.add(oldInterval);
+            }
+        }
+        return newIntervals;
+    }
+
     private List<Interval> mergeIntervals(List<Interval> oldIntervals, Interval newInterval) {
         if (oldIntervals.isEmpty()) {
             return Collections.singletonList(newInterval);

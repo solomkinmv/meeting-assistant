@@ -109,6 +109,26 @@ public class UpdateMeetingsApiTest extends BaseFuncTest {
                                                          intervalRes(300, 400))));
     }
 
+    @Test
+    void removesIntervalsForUser() {
+        String meetingId = createMeeting();
+        testClient.setIntervalsForUser(meetingId, USER_1,
+                                       List.of(intervalReq(100, 200), intervalReq(300, 400), intervalReq(500, 600)));
+        testClient.setIntervalsForUser(meetingId, USER_2,
+                                       List.of(intervalReq(50, 250), intervalReq(300, 700)));
+        testClient.removeIntervalsForUser(meetingId, USER_1, intervalReq(200, 300))
+                  .expectStatus()
+                  .isOk()
+                  .expectBody(MeetingResponse.class)
+                  .isEqualTo(new MeetingResponse(meetingId,
+                                                 Map.of(USER_1, List.of(intervalRes(100, 200),
+                                                                        intervalRes(500, 600)),
+                                                        USER_2, List.of(intervalRes(50, 250),
+                                                                        intervalRes(300, 700))),
+                                                 List.of(intervalRes(100, 200),
+                                                         intervalRes(500, 600))));
+    }
+
     private String createMeeting() {
         return Objects.requireNonNull(testClient.createMeetingAndReturnEntity().getResponseBody()).id();
     }

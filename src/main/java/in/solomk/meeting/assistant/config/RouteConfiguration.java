@@ -2,6 +2,7 @@ package in.solomk.meeting.assistant.config;
 
 import in.solomk.meeting.assistant.api.handler.AddIntervalsHandler;
 import in.solomk.meeting.assistant.api.handler.CreateMeetingHandler;
+import in.solomk.meeting.assistant.api.handler.DeleteIntervalsHandler;
 import in.solomk.meeting.assistant.api.handler.GetMeetingHandler;
 import in.solomk.meeting.assistant.api.handler.SetIntervalsHandler;
 import org.springframework.context.annotation.Bean;
@@ -22,13 +23,15 @@ public class RouteConfiguration {
     RouterFunction<ServerResponse> routerFunction(GetMeetingHandler getMeetingHandler,
                                                   CreateMeetingHandler createMeetingHandler,
                                                   SetIntervalsHandler setIntervalsHandler,
-                                                  AddIntervalsHandler addIntervalsHandler) {
+                                                  AddIntervalsHandler addIntervalsHandler,
+                                                  DeleteIntervalsHandler deleteIntervalsHandler) {
         HandlerFunction<ServerResponse> indexPage = (req) -> ServerResponse.ok().bodyValue(new ClassPathResource("public/index.html"));
         return RouterFunctions.route()
                               .GET("/api/meetings/{id}", getMeetingHandler)
                               .POST("/api/meetings/", createMeetingHandler)
                               .PUT("/api/meetings/{id}/intervals/{username}", setIntervalsHandler)
                               .POST("/api/meetings/{id}/intervals/{username}", addIntervalsHandler)
+                              .DELETE("/api/meetings/{id}/intervals/{username}", deleteIntervalsHandler)
                               .resources("/**", new ClassPathResource("/public/"))
                               .GET("/**", indexPage)
                               .build();

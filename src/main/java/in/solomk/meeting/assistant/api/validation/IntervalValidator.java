@@ -1,6 +1,6 @@
 package in.solomk.meeting.assistant.api.validation;
 
-import in.solomk.meeting.assistant.api.dto.request.AddIntervalsRequest;
+import in.solomk.meeting.assistant.api.dto.request.IntervalRequest;
 import in.solomk.meeting.assistant.exception.ValidationException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
@@ -8,22 +8,21 @@ import reactor.core.publisher.Mono;
 @Component
 public class IntervalValidator {
 
-    public Mono<AddIntervalsRequest> validateIntervals(AddIntervalsRequest addIntervalsRequest) {
-        if (addIntervalsRequest == null) {
-            return Mono.error(new ValidationException("Intervals from request are invalid. Received null"));
+    public Mono<IntervalRequest> validate(IntervalRequest interval) {
+        if (interval == null) {
+            var exception = new ValidationException("Intervals from request are invalid. Received null");
+            return Mono.error(exception);
         }
-        if (addIntervalsRequest.interval() == null) {
-            return Mono.error(new ValidationException("Intervals from request are invalid. Received null"));
-        }
-
-        if (addIntervalsRequest.interval().from() < 0 || addIntervalsRequest.interval().to() < 0) {
-            return Mono.error(new ValidationException("Intervals from request are invalid. Received intervals with negative values: %s", addIntervalsRequest));
-        }
-
-        if (addIntervalsRequest.interval().from() >= addIntervalsRequest.interval().to()) {
-            return Mono.error(new ValidationException("Intervals from request are invalid. Received intervals with from date greater than to: %s", addIntervalsRequest));
+        if (interval.from() < 0 || interval.to() < 0) {
+            var exception = new ValidationException(
+                    "Intervals from request are invalid. Received interval with negative value: %s", interval);
+            return Mono.error(exception);
         }
 
-        return Mono.just(addIntervalsRequest);
+        if (interval.from() >= interval.to()) {
+            var exception = new ValidationException("Intervals from request are invalid. Received interval with from date greater than to: %s", interval);
+            return Mono.error(exception);
+        }
+        return Mono.just(interval);
     }
 }

@@ -86,4 +86,15 @@ public class MeetingsTestClient {
                             .bodyValue(new AddIntervalsRequest(interval))
                             .exchange();
     }
+
+
+    public WebTestClient.ResponseSpec removeIntervalsForUser(String meetingId, String username, IntervalRequest intervalRequest) {
+        return webTestClient.delete()
+                            .uri(uriBuilder -> uriBuilder
+                                    .path("/api/meetings/{id}/intervals/{username}")
+                                    .queryParam("from", intervalRequest.from())
+                                    .queryParam("to", intervalRequest.to())
+                                    .build(meetingId, username))
+                            .exchange();
+    }
 }

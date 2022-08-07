@@ -2,7 +2,7 @@ package in.solomk.meeting.assistant.api.handler;
 
 import in.solomk.meeting.assistant.api.dto.request.AddIntervalsRequest;
 import in.solomk.meeting.assistant.api.dto.response.MeetingResponse;
-import in.solomk.meeting.assistant.api.validation.IntervalValidator;
+import in.solomk.meeting.assistant.api.validation.AddIntervalRequestValidator;
 import in.solomk.meeting.assistant.service.MeetingService;
 import in.solomk.meeting.assistant.service.model.Meeting;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 public class AddIntervalsHandler implements HandlerFunction<ServerResponse> {
 
     private final MeetingService meetingService;
-    private final IntervalValidator validator;
+    private final AddIntervalRequestValidator validator;
 
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
