@@ -3,7 +3,7 @@ import 'devextreme/dist/css/dx.light.css';
 import {Editing, Scheduler, View} from 'devextreme-react/scheduler';
 import './meeting-scheduler.css'
 import React, {useCallback, useEffect, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {meetingClient} from "../../client/meeting-client";
 import {useMeetingService} from "../meeting/meeting-service";
 import {Meeting} from "../../client/model/meeting";
@@ -38,13 +38,13 @@ export default function MeetingScheduler() {
         intersections: []
     } as Meeting);
 
-    function convertIntervalToAppointment(username: string, interval: Interval): Appointment {
-        // return new Appointment
+    function convertIntervalToAppointment(username: string, interval: Interval, disabled: boolean): Appointment {
         return {
             allDay: false,
             startDate: new Date(interval.from),
             endDate: new Date(interval.to),
             text: username,
+            disabled: disabled,
             description: `${formatDate(interval.from)} - ${formatDate(interval.to)}`
         }
     }
@@ -53,7 +53,8 @@ export default function MeetingScheduler() {
         const appointments: Appointment[] = [];
         for (const [username, intervals] of Object.entries(meeting.userIntervals)) {
             for (const interval of intervals) {
-                appointments.push(convertIntervalToAppointment(username, interval));
+                const disabled = username !== currentUsername;
+                appointments.push(convertIntervalToAppointment(username, interval, disabled));
             }
         }
         console.log("Converted user intervals to appointments", appointments);
@@ -134,10 +135,15 @@ export default function MeetingScheduler() {
 
     return (
         <div>
+            <div>
+                <Link to={`/meeting/${meetingId}`}>Visit text based meeting scheduler</Link>
+            </div>
             <h1>Scheduler</h1>
-            <label htmlFor="name">Username:</label>
-            <input autoComplete="off" placeholder="username" type="text" value={currentUsername}
-                   onChange={onUsernameChanged}/>
+            <div>
+                <label htmlFor="name">Username:</label>
+                <input autoComplete="off" placeholder="username" type="text" value={currentUsername}
+                       onChange={onUsernameChanged}/>
+            </div>
             <Scheduler id="scheduler"
                        dataSource={convertUserIntervalsToAppointments(meeting)}
                        currentDate={currentDate}
