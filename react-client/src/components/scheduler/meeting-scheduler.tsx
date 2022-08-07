@@ -5,7 +5,6 @@ import './meeting-scheduler.css'
 import React, {useCallback, useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {meetingClient} from "../../client/meeting-client";
-import {useMeetingService} from "../meeting/meeting-service";
 import {Meeting} from "../../client/model/meeting";
 import {Interval} from "../../client/model/interval";
 import {
@@ -27,9 +26,6 @@ export default function MeetingScheduler() {
     const params = useParams();
     const navigate = useNavigate();
     const client = meetingClient();
-    const meetingService = useMeetingService();
-    const [intervalStart, setIntervalStart] = useState("");
-    const [intervalEnd, setIntervalEnd] = useState("");
     const [currentUsername, setUsername] = useState(sessionStorage.getItem("username") || "");
     const meetingId = params.meetingId ?? "";
     const [meeting, setMeeting] = useState<Meeting>({
