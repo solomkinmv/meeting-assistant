@@ -13,7 +13,6 @@ function App() {
                 }}
             >
                 <Link to="/">Home</Link> | {" "}
-                <Link to="/scheduler/1">Scheduler</Link> | {" "}
                 <Link to="/about">About</Link>
             </nav>
             <Outlet/>

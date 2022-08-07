@@ -8,7 +8,7 @@ function Home() {
 
     async function navigateToCreatedMeeting() {
         const id = await client.createMeeting()
-        navigate(`/meeting/${id}`)
+        navigate(`/scheduler/${id}`)
     }
 
     return (
@@ -20,8 +20,7 @@ function Home() {
                 Create Meeting
             </button>
         </>
-    )
-        ;
+    );
 }
 
 export default Home;
