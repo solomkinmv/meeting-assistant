@@ -6,6 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import Home from "./components/home/home";
 import MeetingComponent from "./components/meeting/meeting-component";
 import App from "./components/app/app";
+import 'devextreme/dist/css/dx.light.css';
+import MeetingScheduler from "./components/scheduler/meeting-scheduler";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -17,7 +19,7 @@ root.render(
                 <Route path="/" element={<App/>}>
                     <Route path="/" element={<Home/>}/>
                     <Route path='/meeting/:meetingId' element={<MeetingComponent/>}/>
-
+                    <Route path='/scheduler/:meetingId' element={<MeetingScheduler/>}/>
                     <Route
                         path="*"
                         element={
