@@ -8,9 +8,7 @@ import {meetingClient} from "../../client/meeting-client";
 import {useMeetingService} from "../meeting/meeting-service";
 import {Meeting} from "../../client/model/meeting";
 import {Interval} from "../../client/model/interval";
-import {Appointment, AppointmentAddingEvent} from "devextreme/ui/scheduler";
-import DevExpress from "devextreme";
-import AppointmentDeletingEvent = DevExpress.ui.dxScheduler.AppointmentDeletingEvent;
+import {Appointment, AppointmentAddingEvent, AppointmentDeletingEvent} from "devextreme/ui/scheduler";
 
 export default function MeetingScheduler() {
 
@@ -84,9 +82,9 @@ export default function MeetingScheduler() {
             e.cancel = true;
             return
         }
-        // const updatedMeeting = await client.deleteInterval(meetingId, currentUsername, interval)
-        // console.log("Updated meeting to", updatedMeeting);
-        // setMeeting(updatedMeeting);
+        const updatedMeeting = await client.removeIntervals(meetingId, currentUsername, interval)
+        console.log("Updated meeting to", updatedMeeting);
+        setMeeting(updatedMeeting);
     }
 
     function onUsernameChanged(event: React.ChangeEvent<HTMLInputElement>) {
@@ -127,6 +125,7 @@ export default function MeetingScheduler() {
                        allDayPanelMode="allDay"
                        onAppointmentAdding={onAppointmentAdding}
                        onAppointmentDeleting={onAppointmentDeleting}
+                       defaultCurrentView="week"
             >
                 <View
                     type="day"

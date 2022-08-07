@@ -33,6 +33,15 @@ class MeetingClient {
         return meeting
     }
 
+    async removeIntervals(meetingId: string, username: string, interval: Interval): Promise<Meeting> {
+        const url = new URL(`${process.env.REACT_APP_MEETING_SERVICE_API_HOST}/api/meetings/${meetingId}/intervals/${username}`);
+        url.searchParams.append('from', interval.from.toString());
+        url.searchParams.append('to', interval.to.toString());
+        const meeting = await this.restClient.delete(url.toString());
+        console.log('Received response on interval removal', meeting)
+        return meeting
+    }
+
     async getMeeting(meetingId: string): Promise<Meeting> {
         const url = `${process.env.REACT_APP_MEETING_SERVICE_API_HOST}/api/meetings/${meetingId}`;
         console.debug('Getting meeting', url)
@@ -87,6 +96,22 @@ class RestClient {
         return data
     }
 
+    async delete(url: string) {
+        const response = await fetch(url, {
+            method: 'DELETE',
+            mode: 'cors',
+        })
+        if (response.status === 404) {
+            throw new NotFoundError("Could not find resource at " + url)
+        }
+        console.log('Received response on delete', response)
+        try {
+            return await response.json()
+        } catch (e) {
+            console.error(`Error on delete ${url}`, e)
+            throw e;
+        }
+    }
 }
 
 class NotFoundError extends Error {
