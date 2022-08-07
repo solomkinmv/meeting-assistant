@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {meetingClient} from "../../client/meeting-client";
 import {Meeting} from "../../client/model/meeting";
 import {Interval} from "../../client/model/interval";
@@ -66,10 +66,15 @@ export default function MeetingComponent() {
 
     return (
         <div>
-            <h1>Meeting Page Here for meeting {meetingId}</h1>
-            <label htmlFor="name">Username:</label>
-            <input autoComplete="off" placeholder="username" type="text" value={currentUsername}
-                   onChange={onUsernameChanged}/>
+            <div>
+                <Link to={`/scheduler/${meetingId}`}>Visit ui based meeting scheduler</Link>
+            </div>
+            <h1>Meeting Page for meeting {meetingId}</h1>
+            <div>
+                <label htmlFor="name">Username:</label>
+                <input autoComplete="off" placeholder="username" type="text" value={currentUsername}
+                       onChange={onUsernameChanged}/>
+            </div>
 
             <div id="intervals">
                 <h2>Intervals:</h2>
