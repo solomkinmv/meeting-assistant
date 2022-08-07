@@ -169,4 +169,22 @@ class MeetingServiceTest {
                     assertThat(error.getMessage()).isEqualTo("Meeting %s is missing in the database".formatted(MEETING_ID));
                 });
     }
+
+    @Test
+    void removesIntervalsInRange() {
+        mockSaveOperation();
+        mockEnricher();
+        Interval oldInterval1 = new Interval(1, 2);
+        Interval oldInterval2 = new Interval(3, 4);
+        Interval oldInterval3 = new Interval(5, 6);
+        Interval oldInterval4 = new Interval(7, 8);
+        when(repository.getMeetingById(MEETING_ID))
+                .thenReturn(Mono.just(Meeting.empty(MEETING_ID).withUserIntervals(USER_ID, List.of(oldInterval1, oldInterval2, oldInterval3, oldInterval4))));
+
+        Interval deleteInterval = new Interval(2, 5);
+        Mono<Meeting> meetingMono = meetingService.deleteIntervalsForUser(MEETING_ID, USER_ID, deleteInterval);
+
+        assertThat(meetingMono)
+                .emits(new Meeting(MEETING_ID, Map.of(USER_ID, List.of(oldInterval1, oldInterval4))));
+    }
 }
