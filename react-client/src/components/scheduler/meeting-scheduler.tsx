@@ -8,7 +8,12 @@ import {meetingClient} from "../../client/meeting-client";
 import {useMeetingService} from "../meeting/meeting-service";
 import {Meeting} from "../../client/model/meeting";
 import {Interval} from "../../client/model/interval";
-import {Appointment, AppointmentAddingEvent, AppointmentDeletingEvent} from "devextreme/ui/scheduler";
+import {
+    Appointment,
+    AppointmentAddingEvent,
+    AppointmentDeletingEvent,
+    AppointmentUpdatingEvent
+} from "devextreme/ui/scheduler";
 
 export default function MeetingScheduler() {
 
@@ -87,6 +92,22 @@ export default function MeetingScheduler() {
         setMeeting(updatedMeeting);
     }
 
+    async function onAppointmentUpdating(e: AppointmentUpdatingEvent) {
+        console.log("Appointment updating", e);
+        if (currentUsername === "") {
+            alert("You must be logged in to update an appointment")
+            e.cancel = true;
+            return
+        }
+        const oldInterval = new Interval((e.oldData.startDate as Date).getTime(), (e.oldData.endDate as Date).getTime());
+        await client.removeIntervals(meetingId, currentUsername, oldInterval);
+
+        const newInterval = new Interval((e.newData.startDate as Date).getTime(), (e.newData.endDate as Date).getTime());
+        const updatedMeetingAfterAdding = await client.addInterval(meetingId, currentUsername, newInterval);
+        console.log("Updated meeting to", updatedMeetingAfterAdding);
+        setMeeting(updatedMeetingAfterAdding);
+    }
+
     function onUsernameChanged(event: React.ChangeEvent<HTMLInputElement>) {
         const value = event.target.value;
         setUsername(value);
@@ -125,6 +146,7 @@ export default function MeetingScheduler() {
                        allDayPanelMode="allDay"
                        onAppointmentAdding={onAppointmentAdding}
                        onAppointmentDeleting={onAppointmentDeleting}
+                       onAppointmentUpdating={onAppointmentUpdating}
                        defaultCurrentView="week"
             >
                 <View
