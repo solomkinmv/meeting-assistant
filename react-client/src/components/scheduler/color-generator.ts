@@ -5,6 +5,7 @@ const colors = [
     "#f05797",
     "#2a9010",
     // https://jsfiddle.net/k8NC2/1/
+    "#FFB300",
     "#803E75",
     "#FF6800",
     "#A6BDD7",
@@ -23,7 +24,6 @@ const colors = [
     "#93AA00",
     "#593315",
     "#F13A13",
-    "#FFB300",
     "#232C16",
 ];
 
