@@ -195,13 +195,3 @@ export default function MeetingScheduler() {
         </div>
     )
 }
-
-function formatDate(date: number): string {
-    return new Date(date).toLocaleDateString([], {
-        day: '2-digit',
-        month: 'numeric',
-        year: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit'
-    })
-}
