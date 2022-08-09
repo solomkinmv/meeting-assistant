@@ -1,3 +1,7 @@
 #scheduler {
     height: 750px;
 }
+
+.dx-scheduler-appointment.dx-state-disabled {
+    opacity: .9;
+}
