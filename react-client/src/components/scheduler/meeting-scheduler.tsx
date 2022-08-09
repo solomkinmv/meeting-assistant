@@ -1,6 +1,6 @@
 import 'devextreme/dist/css/dx.light.css';
 
-import {Editing, Scheduler, View} from 'devextreme-react/scheduler';
+import {Editing, Resource, Scheduler, View} from 'devextreme-react/scheduler';
 import './meeting-scheduler.css'
 import React, {useCallback, useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
@@ -14,6 +14,8 @@ import {
     AppointmentFormOpeningEvent,
     AppointmentUpdatingEvent
 } from "devextreme/ui/scheduler";
+import {ResourceRecord} from "./resource-record";
+import {getColor} from "./color-generator";
 
 export default function MeetingScheduler() {
 
@@ -28,12 +30,22 @@ export default function MeetingScheduler() {
     const navigate = useNavigate();
     const client = meetingClient();
     const [currentUsername, setUsername] = useState(sessionStorage.getItem("username") || "");
+    const [userResources, setUserResources] = useState<ResourceRecord[]>([]);
     const meetingId = params.meetingId ?? "";
     const [meeting, setMeeting] = useState<Meeting>({
         id: meetingId,
         userIntervals: {},
         intersections: []
     } as Meeting);
+
+    function updateMeeting(meeting: Meeting) {
+        setMeeting(meeting);
+        const updatedUserResources: ResourceRecord[] = Object.keys(meeting.userIntervals)
+            .map((name, idx) => {
+                return new ResourceRecord(name, name, getColor(idx));
+            });
+        setUserResources(updatedUserResources)
+    }
 
     function convertIntervalToAppointment(username: string, interval: Interval, disabled: boolean): Appointment {
         return {
@@ -73,7 +85,7 @@ export default function MeetingScheduler() {
         }
         const updatedMeeting = await client.addInterval(meetingId, currentUsername, newInterval)
         console.log("Updated meeting to", updatedMeeting);
-        setMeeting(updatedMeeting);
+        updateMeeting(updatedMeeting);
     }
 
     async function onAppointmentDeleting(e: AppointmentDeletingEvent) {
@@ -86,7 +98,7 @@ export default function MeetingScheduler() {
         }
         const updatedMeeting = await client.removeIntervals(meetingId, currentUsername, interval)
         console.log("Updated meeting to", updatedMeeting);
-        setMeeting(updatedMeeting);
+        updateMeeting(updatedMeeting);
     }
 
     async function onAppointmentUpdating(e: AppointmentUpdatingEvent) {
@@ -102,7 +114,7 @@ export default function MeetingScheduler() {
         const newInterval = new Interval((e.newData.startDate as Date).getTime(), (e.newData.endDate as Date).getTime());
         const updatedMeetingAfterAdding = await client.addInterval(meetingId, currentUsername, newInterval);
         console.log("Updated meeting to", updatedMeetingAfterAdding);
-        setMeeting(updatedMeetingAfterAdding);
+        updateMeeting(updatedMeetingAfterAdding);
     }
 
     function onUsernameChanged(event: React.ChangeEvent<HTMLInputElement>) {
@@ -147,7 +159,7 @@ export default function MeetingScheduler() {
     useEffect(() => {
 
         fetchMeeting()
-            .then(meeting => setMeeting(meeting!))
+            .then(meeting => updateMeeting(meeting!))
             // make sure to catch any error
             .catch(console.error);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -186,6 +198,12 @@ export default function MeetingScheduler() {
                 <View type="month"/>
                 <View type="agenda"
                       agendaDuration={31}
+                />
+                <Resource
+                    dataSource={userResources}
+                    fieldExpr="text"
+                    label="Users"
+                    useColorAsDefault={false}
                 />
                 <Editing
                     allowDragging={true}
