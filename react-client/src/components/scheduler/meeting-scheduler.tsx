@@ -16,6 +16,7 @@ import {
 } from "devextreme/ui/scheduler";
 import {ResourceRecord} from "./resource-record";
 import {getColor} from "./color-generator";
+import Intersections from "./intersections/intersections";
 
 export default function MeetingScheduler() {
 
@@ -176,40 +177,45 @@ export default function MeetingScheduler() {
                 <input autoComplete="off" placeholder="username" type="text" value={currentUsername}
                        onChange={onUsernameChanged}/>
             </div>
-            <Scheduler id="scheduler"
-                       dataSource={convertUserIntervalsToAppointments(meeting)}
-                       currentDate={currentDate}
-                       onOptionChanged={handlePropertyChange}
-                       adaptivityEnabled={true}
-                       allDayPanelMode="allDay"
-                       onAppointmentAdding={onAppointmentAdding}
-                       onAppointmentDeleting={onAppointmentDeleting}
-                       onAppointmentUpdating={onAppointmentUpdating}
-                       defaultCurrentView="week"
-                       showCurrentTimeIndicator={true}
-                       onAppointmentFormOpening={customizeAppointmentForm}
-            >
-                <View
-                    type="day"
-                />
-                <View
-                    type="week"
-                />
-                <View type="month"/>
-                <View type="agenda"
-                      agendaDuration={31}
-                />
-                <Resource
-                    dataSource={userResources}
-                    fieldExpr="text"
-                    label="Users"
-                    useColorAsDefault={false}
-                />
-                <Editing
-                    allowDragging={true}
-                    allowTimeZoneEditing={true}
-                />
-            </Scheduler>
+            <div>
+                <Scheduler id="scheduler"
+                           dataSource={convertUserIntervalsToAppointments(meeting)}
+                           currentDate={currentDate}
+                           onOptionChanged={handlePropertyChange}
+                           adaptivityEnabled={true}
+                           allDayPanelMode="allDay"
+                           onAppointmentAdding={onAppointmentAdding}
+                           onAppointmentDeleting={onAppointmentDeleting}
+                           onAppointmentUpdating={onAppointmentUpdating}
+                           defaultCurrentView="week"
+                           showCurrentTimeIndicator={true}
+                           onAppointmentFormOpening={customizeAppointmentForm}
+                >
+                    <View
+                        type="day"
+                    />
+                    <View
+                        type="week"
+                    />
+                    <View type="month"/>
+                    <View type="agenda"
+                          agendaDuration={31}
+                    />
+                    <Resource
+                        dataSource={userResources}
+                        fieldExpr="text"
+                        label="Users"
+                        useColorAsDefault={false}
+                    />
+                    <Editing
+                        allowDragging={true}
+                        allowTimeZoneEditing={true}
+                    />
+                </Scheduler>
+            </div>
+            <div>
+                <Intersections intervals={meeting.intersections}/>
+            </div>
         </div>
     )
 }
