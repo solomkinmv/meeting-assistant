@@ -30,8 +30,7 @@ export default function Intersections(props: IntersectionsProperties) {
                 className="intersection-summary"
                 dataSource={intersectionAppointments}
                 currentDate={currentDate}
-                defaultCurrentView="agenda"
-                height={600}>
+                defaultCurrentView="agenda">
                 <View type="agenda"
                       agendaDuration={3650}
                 />

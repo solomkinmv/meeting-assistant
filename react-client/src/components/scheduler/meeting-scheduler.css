@@ -5,3 +5,16 @@
 .dx-scheduler-appointment.dx-state-disabled {
     opacity: .9;
 }
+
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+}
+
+.scheduler {
+    grid-column: span 8;
+}
+
+.intersections {
+    grid-column: span 4;
+}

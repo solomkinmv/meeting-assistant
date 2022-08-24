@@ -1,3 +1,7 @@
 .intersection-summary .dx-toolbar {
     display: none;
 }
+
+#intersection-summary {
+    height: 750px;
+}
