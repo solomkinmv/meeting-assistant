@@ -167,7 +167,7 @@ export default function MeetingScheduler() {
     }, []);
 
     return (
-        <div>
+        <>
             <div>
                 <Link to={`/meeting/${meetingId}`}>Visit text based meeting scheduler</Link>
             </div>
@@ -177,45 +177,45 @@ export default function MeetingScheduler() {
                 <input autoComplete="off" placeholder="username" type="text" value={currentUsername}
                        onChange={onUsernameChanged}/>
             </div>
-            <div>
-                <Scheduler id="scheduler"
-                           dataSource={convertUserIntervalsToAppointments(meeting)}
-                           currentDate={currentDate}
-                           onOptionChanged={handlePropertyChange}
-                           adaptivityEnabled={true}
-                           allDayPanelMode="allDay"
-                           onAppointmentAdding={onAppointmentAdding}
-                           onAppointmentDeleting={onAppointmentDeleting}
-                           onAppointmentUpdating={onAppointmentUpdating}
-                           defaultCurrentView="week"
-                           showCurrentTimeIndicator={true}
-                           onAppointmentFormOpening={customizeAppointmentForm}
-                >
-                    <View
-                        type="day"
-                    />
-                    <View
-                        type="week"
-                    />
-                    <View type="month"/>
-                    <View type="agenda"
-                          agendaDuration={31}
-                    />
-                    <Resource
-                        dataSource={userResources}
-                        fieldExpr="text"
-                        label="Users"
-                        useColorAsDefault={false}
-                    />
-                    <Editing
-                        allowDragging={true}
-                        allowTimeZoneEditing={true}
-                    />
-                </Scheduler>
+            <div className="wrapper">
+                <div className="scheduler">
+                    <Scheduler id="scheduler"
+                               dataSource={convertUserIntervalsToAppointments(meeting)}
+                               currentDate={currentDate}
+                               onOptionChanged={handlePropertyChange}
+                               adaptivityEnabled={true}
+                               allDayPanelMode="allDay"
+                               onAppointmentAdding={onAppointmentAdding}
+                               onAppointmentDeleting={onAppointmentDeleting}
+                               onAppointmentUpdating={onAppointmentUpdating}
+                               defaultCurrentView="week"
+                               showCurrentTimeIndicator={true}
+                               onAppointmentFormOpening={customizeAppointmentForm}
+                    >
+                        <View
+                            type="day"
+                        />
+                        <View
+                            type="week"
+                        />
+                        <View type="month"/>
+                        <View type="agenda"/>
+                        <Resource
+                            dataSource={userResources}
+                            fieldExpr="text"
+                            label="Users"
+                            useColorAsDefault={false}
+                        />
+                        <Editing
+                            allowDragging={true}
+                            allowTimeZoneEditing={true}
+                        />
+                    </Scheduler>
+                </div>
+                <div className="intersections">
+                    <Intersections intervals={meeting.intersections}/>
+                </div>
             </div>
-            <div>
-                <Intersections intervals={meeting.intersections}/>
-            </div>
-        </div>
+        </>
     )
 }
