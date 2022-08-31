@@ -1,6 +1,4 @@
-import {Scheduler, View} from "devextreme-react/scheduler";
 import {Interval} from "../../../client/model/interval";
-import {Appointment} from "devextreme/ui/scheduler";
 import React from "react";
 import './intersections.css'
 
@@ -10,31 +8,96 @@ export interface IntersectionsProperties {
 
 export default function Intersections(props: IntersectionsProperties) {
     const intervals: ReadonlyArray<Interval> = props.intervals
-    const currentDate: Date = intervals.length === 0 ? new Date() : new Date(intervals[0].from)
-
-    const intersectionAppointments: Appointment[] = intervals.map(interval => convertIntervalToAppointment(interval))
-
-    function convertIntervalToAppointment(interval: Interval): Appointment {
-        return {
-            allDay: false,
-            startDate: new Date(interval.from),
-            endDate: new Date(interval.to),
-            disabled: true
-        }
-    }
+    const separatedIntervals = intervals.flatMap(interval => splitIntervalByDays(interval.from, interval.to));
+    const groupedIntervalsList = groupIntervals(separatedIntervals)
 
     return (
         <>
-            <Scheduler
-                id="intersection-summary"
-                className="intersection-summary"
-                dataSource={intersectionAppointments}
-                currentDate={currentDate}
-                defaultCurrentView="agenda">
-                <View type="agenda"
-                      agendaDuration={3650}
-                />
-            </Scheduler>
+            <h2>Intersections:</h2>
+            <ul>
+                {groupedIntervalsList.map(groupIntervals => {
+                    return (
+                        <li>
+                            <div>{formatDate(groupIntervals.date)}</div>
+                            {renderGroupIntervals(groupIntervals.intervals)}
+                        </li>
+                    )
+                })}
+            </ul>
         </>
     )
+}
+
+function renderGroupIntervals(intervals: Interval[]) {
+    if (intervals[0].from == intervals[0].to) {
+        return
+    }
+    return <ul>
+        {intervals.map(interval => {
+            return <li>{formatTimeFromTimestamp(interval.from)} - {formatTimeFromTimestamp(interval.to)}</li>
+        })}
+    </ul>
+}
+
+function splitIntervalByDays(from: number, to: number): Interval[] {
+    const endDate: Date = new Date(to)
+    let startDate: Date = new Date(from)
+    const result: Interval[] = []
+    while (startDate < endDate && startDate.getDay() != endDate.getDay()) {
+        const nextDate = new Date(startDate)
+        nextDate.setHours(0, 0, 0, 0)
+
+        result.push(new Interval(startDate.getTime(), nextDate.getTime()))
+
+        nextDate.setDate(nextDate.getDate() + 1)
+        startDate = nextDate;
+    }
+    if (startDate < endDate) {
+        result.push(new Interval(startDate.getTime(), endDate.getTime()))
+    }
+    return result
+}
+
+function groupIntervals(intervals: Interval[]): GroupedIntervals[] {
+    let previousDate: Date | null = null
+    let previousGroup: GroupedIntervals
+    const result: GroupedIntervals[] = []
+    intervals.forEach(interval => {
+        const date = trimTime(new Date(interval.from))
+        if (previousDate?.getTime() !== date.getTime()) {
+            previousDate = date
+            previousGroup = new GroupedIntervals(date, [])
+            result.push(previousGroup)
+        }
+        previousGroup.intervals.push(interval)
+    })
+
+    return result
+}
+
+function trimTime(date: Date): Date {
+    console.log("Trimming time", date)
+    const result: Date = new Date(date)
+    result.setHours(0, 0, 0, 0)
+    console.log("Trimmed time", result)
+    return result
+}
+
+function formatDate(date: Date): string {
+    return date.toLocaleDateString([], {
+        day: '2-digit',
+        month: 'long',
+        year: '2-digit',
+        // hour: '2-digit',
+        // minute: '2-digit'
+    })
+}
+
+function formatTimeFromTimestamp(date: number): string {
+    return new Date(date).toLocaleTimeString()
+}
+
+class GroupedIntervals {
+    constructor(readonly date: Date, readonly intervals: Interval[]) {
+    }
 }
