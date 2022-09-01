@@ -26,7 +26,7 @@ export default function Intersections(props: IntersectionsProperties) {
 }
 
 function renderGroupIntervals(intervals: Interval[]) {
-    if (intervals[0].from == intervals[0].to) {
+    if (intervals[0].from === intervals[0].to) {
         return
     }
     return (
@@ -42,7 +42,7 @@ function splitIntervalByDays(from: number, to: number): Interval[] {
     const endDate: Date = new Date(to)
     let startDate: Date = new Date(from)
     const result: Interval[] = []
-    while (startDate < endDate && startDate.getDay() != endDate.getDay()) {
+    while (startDate < endDate && startDate.getDay() !== endDate.getDay()) {
         const nextDate = new Date(startDate)
         nextDate.setHours(0, 0, 0, 0)
 
@@ -86,9 +86,7 @@ function formatDate(date: Date): string {
     return date.toLocaleDateString([], {
         day: '2-digit',
         month: 'long',
-        year: '2-digit',
-        // hour: '2-digit',
-        // minute: '2-digit'
+        year: '2-digit'
     })
 }
 
