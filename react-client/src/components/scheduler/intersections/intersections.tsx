@@ -12,19 +12,16 @@ export default function Intersections(props: IntersectionsProperties) {
     const groupedIntervalsList = groupIntervals(separatedIntervals)
 
     return (
-        <>
-            <h2>Intersections:</h2>
-            <ul>
-                {groupedIntervalsList.map(groupIntervals => {
-                    return (
-                        <li>
-                            <div>{formatDate(groupIntervals.date)}</div>
-                            {renderGroupIntervals(groupIntervals.intervals)}
-                        </li>
-                    )
-                })}
-            </ul>
-        </>
+        <div className="intersection-wrapper">
+            <h2 className="intersection-header">Intersections:</h2>
+            {groupedIntervalsList.map(groupIntervals => {
+                return (<>
+                        <div className="intersection-date">{formatDate(groupIntervals.date)}</div>
+                        {renderGroupIntervals(groupIntervals.intervals)}
+                    </>
+                )
+            })}
+        </div>
     )
 }
 
@@ -32,11 +29,13 @@ function renderGroupIntervals(intervals: Interval[]) {
     if (intervals[0].from == intervals[0].to) {
         return
     }
-    return <ul>
-        {intervals.map(interval => {
-            return <li>{formatTimeFromTimestamp(interval.from)} - {formatTimeFromTimestamp(interval.to)}</li>
-        })}
-    </ul>
+    return (
+        <div className="intersection-date-slots">
+            {intervals.map(interval => {
+                return <div>{formatTimeFromTimestamp(interval.from)} - {formatTimeFromTimestamp(interval.to)}</div>
+            })}
+        </div>
+    )
 }
 
 function splitIntervalByDays(from: number, to: number): Interval[] {

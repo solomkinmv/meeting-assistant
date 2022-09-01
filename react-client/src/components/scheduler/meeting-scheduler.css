@@ -2,10 +2,6 @@
     height: 750px;
 }
 
-#intersection-summary {
-    height: 750px;
-}
-
 .dx-scheduler-appointment.dx-state-disabled {
     opacity: .9;
 }
@@ -33,7 +29,4 @@
         grid-column: span 12;
     }
 
-    #intersection-summary {
-        height: 300px;
-    }
 }
