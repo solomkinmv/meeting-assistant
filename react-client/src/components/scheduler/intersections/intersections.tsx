@@ -15,10 +15,10 @@ export default function Intersections(props: IntersectionsProperties) {
         <div className="intersection-wrapper">
             <h2 className="intersection-header">Intersections:</h2>
             {groupedIntervalsList.map(groupIntervals => {
-                return (<>
+                return (<React.Fragment key={groupIntervals.date.toString()}>
                         <div className="intersection-date">{formatDate(groupIntervals.date)}</div>
                         {renderGroupIntervals(groupIntervals.intervals)}
-                    </>
+                    </React.Fragment>
                 )
             })}
         </div>
@@ -32,7 +32,8 @@ function renderGroupIntervals(intervals: Interval[]) {
     return (
         <div className="intersection-date-slots">
             {intervals.map(interval => {
-                return <div>{formatTimeFromTimestamp(interval.from)} - {formatTimeFromTimestamp(interval.to)}</div>
+                return <div
+                    key={interval.from}>{formatTimeFromTimestamp(interval.from)} - {formatTimeFromTimestamp(interval.to)}</div>
             })}
         </div>
     )
