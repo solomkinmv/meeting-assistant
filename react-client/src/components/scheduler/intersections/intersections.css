@@ -1,3 +1,17 @@
-.intersection-summary .dx-toolbar {
-    display: none;
+.intersection-wrapper {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(50px, 1fr));
+}
+
+.intersection-header {
+    grid-column: span 12;
+}
+
+.intersection-date {
+    grid-column: 1 / 4;
+    margin: 0 0 5px 0;
+}
+
+.intersection-date-slots {
+    grid-column: 4 / 12;
 }
