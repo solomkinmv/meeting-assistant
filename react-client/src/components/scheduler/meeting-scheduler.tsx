@@ -2,7 +2,7 @@ import 'devextreme/dist/css/dx.light.css';
 
 import {Editing, Resource, Scheduler, View} from 'devextreme-react/scheduler';
 import './meeting-scheduler.css'
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {meetingClient} from "../../client/meeting-client";
 import {Meeting} from "../../client/model/meeting";
@@ -12,7 +12,8 @@ import {
     AppointmentAddingEvent,
     AppointmentDeletingEvent,
     AppointmentFormOpeningEvent,
-    AppointmentUpdatingEvent
+    AppointmentUpdatingEvent,
+    ContentReadyEvent
 } from "devextreme/ui/scheduler";
 import {ResourceRecord} from "./resource-record";
 import {getColor} from "./color-generator";
@@ -33,11 +34,13 @@ export default function MeetingScheduler() {
     const [currentUsername, setUsername] = useState(sessionStorage.getItem("username") || "");
     const [userResources, setUserResources] = useState<ResourceRecord[]>([]);
     const meetingId = params.meetingId ?? "";
+    const scheduler = useRef<Scheduler>(null);
     const [meeting, setMeeting] = useState<Meeting>({
         id: meetingId,
         userIntervals: {},
         intersections: []
     } as Meeting);
+    const [appointments, setAppointments] = useState<Appointment[]>([])
 
     function updateMeeting(meeting: Meeting) {
         setMeeting(meeting);
@@ -46,6 +49,7 @@ export default function MeetingScheduler() {
                 return new ResourceRecord(name, name, getColor(idx));
             });
         setUserResources(updatedUserResources)
+        setAppointments(convertUserIntervalsToAppointments(meeting))
     }
 
     function convertIntervalToAppointment(username: string, interval: Interval, disabled: boolean): Appointment {
@@ -118,6 +122,28 @@ export default function MeetingScheduler() {
         updateMeeting(updatedMeetingAfterAdding);
     }
 
+    function onContentReady(e: ContentReadyEvent) {
+        if (scheduler.current) {
+            if (scheduler.current.instance.option().currentView !== "week") return
+            const fromView = scheduler.current.instance.getStartViewDate()
+            const toView = scheduler.current.instance.getEndViewDate()
+
+            let firstNavigationDate = null
+            for (let appointment of appointments) {
+                const startDate = appointment.startDate as Date
+                if (!startDate) continue
+                if (startDate > toView) break
+                if (startDate >= fromView && (!firstNavigationDate || startDate.getHours() < firstNavigationDate.getHours())) {
+                    firstNavigationDate = startDate
+                }
+            }
+
+            if (firstNavigationDate) {
+                scheduler.current.instance.scrollTo(firstNavigationDate)
+            }
+        }
+    }
+
     function onUsernameChanged(event: React.ChangeEvent<HTMLInputElement>) {
         const value = event.target.value;
         setUsername(value);
@@ -163,6 +189,7 @@ export default function MeetingScheduler() {
             .then(meeting => updateMeeting(meeting!))
             // make sure to catch any error
             .catch(console.error);
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -180,7 +207,8 @@ export default function MeetingScheduler() {
             <div className="wrapper">
                 <div className="scheduler">
                     <Scheduler id="scheduler"
-                               dataSource={convertUserIntervalsToAppointments(meeting)}
+                               ref={scheduler}
+                               dataSource={appointments}
                                currentDate={currentDate}
                                onOptionChanged={handlePropertyChange}
                                adaptivityEnabled={true}
@@ -188,6 +216,7 @@ export default function MeetingScheduler() {
                                onAppointmentAdding={onAppointmentAdding}
                                onAppointmentDeleting={onAppointmentDeleting}
                                onAppointmentUpdating={onAppointmentUpdating}
+                               onContentReady={onContentReady}
                                defaultCurrentView="week"
                                showCurrentTimeIndicator={true}
                                onAppointmentFormOpening={customizeAppointmentForm}
