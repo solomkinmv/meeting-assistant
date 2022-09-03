@@ -76,10 +76,8 @@ function groupIntervals(intervals: Interval[]): GroupedIntervals[] {
 }
 
 function trimTime(date: Date): Date {
-    console.log("Trimming time", date)
     const result: Date = new Date(date)
     result.setHours(0, 0, 0, 0)
-    console.log("Trimmed time", result)
     return result
 }
 
