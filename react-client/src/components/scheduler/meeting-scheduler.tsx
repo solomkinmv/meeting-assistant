@@ -18,6 +18,7 @@ import {
 import {ResourceRecord} from "./resource-record";
 import {getColor} from "./color-generator";
 import Intersections from "./intersections/intersections";
+import {SpeedDialAction} from "devextreme-react";
 
 export default function MeetingScheduler() {
 
@@ -123,25 +124,26 @@ export default function MeetingScheduler() {
     }
 
     function onContentReady(e: ContentReadyEvent) {
-        if (scheduler.current) {
-            if (scheduler.current.instance.option().currentView !== "week") return
-            const fromView = scheduler.current.instance.getStartViewDate()
-            const toView = scheduler.current.instance.getEndViewDate()
+        if (!scheduler.current || scheduler.current.instance.option().currentView !== "week") {
+            return
+        }
+        const fromView = scheduler.current.instance.getStartViewDate()
+        const toView = scheduler.current.instance.getEndViewDate()
 
-            let firstNavigationDate = null
-            for (let appointment of appointments) {
-                const startDate = appointment.startDate as Date
-                if (!startDate) continue
-                if (startDate > toView) break
-                if (startDate >= fromView && (!firstNavigationDate || startDate.getHours() < firstNavigationDate.getHours())) {
-                    firstNavigationDate = startDate
-                }
-            }
-
-            if (firstNavigationDate) {
-                scheduler.current.instance.scrollTo(firstNavigationDate)
+        let firstNavigationDate = null
+        for (let appointment of appointments) {
+            const startDate = appointment.startDate as Date
+            if (!startDate) continue
+            if (startDate > toView) break
+            if (startDate >= fromView && (!firstNavigationDate || startDate.getHours() < firstNavigationDate.getHours())) {
+                firstNavigationDate = startDate
             }
         }
+
+        if (firstNavigationDate) {
+            scheduler.current.instance.scrollTo(firstNavigationDate)
+        }
+
     }
 
     function onUsernameChanged(event: React.ChangeEvent<HTMLInputElement>) {
@@ -238,6 +240,10 @@ export default function MeetingScheduler() {
                         <Editing
                             allowDragging={true}
                             allowTimeZoneEditing={true}
+                        />
+                        <SpeedDialAction
+                            icon="plus"
+                            onClick={() => scheduler.current?.instance.showAppointmentPopup()}
                         />
                     </Scheduler>
                 </div>
