@@ -19,6 +19,7 @@ import {ResourceRecord} from "./resource-record";
 import {getColor} from "./color-generator";
 import Intersections from "./intersections/intersections";
 import {SpeedDialAction} from "devextreme-react";
+import {TextField} from "@mui/material";
 
 export default function MeetingScheduler() {
 
@@ -202,9 +203,15 @@ export default function MeetingScheduler() {
             </div>
             <h1>Scheduler</h1>
             <div>
-                <label htmlFor="name">Username:</label>
-                <input autoComplete="off" placeholder="username" type="text" value={currentUsername}
-                       onChange={onUsernameChanged}/>
+                <TextField
+                    id="outlined-textarea"
+                    label="Username"
+                    size="small"
+                    value={currentUsername}
+                    onChange={onUsernameChanged}
+                    required={true}
+                    error={!currentUsername}
+                />
             </div>
             <div className="wrapper">
                 <div className="scheduler">
