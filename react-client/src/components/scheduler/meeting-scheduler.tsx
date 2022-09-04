@@ -20,6 +20,7 @@ import {getColor} from "./color-generator";
 import Intersections from "./intersections/intersections";
 import {SpeedDialAction} from "devextreme-react";
 import {TextField} from "@mui/material";
+import UsernameAlert from "./username-alert/username-alert";
 
 export default function MeetingScheduler() {
 
@@ -43,6 +44,17 @@ export default function MeetingScheduler() {
         intersections: []
     } as Meeting);
     const [appointments, setAppointments] = useState<Appointment[]>([])
+    const [alertOpen, setAlertOpen] = useState(false)
+
+    function handleSaveAlert(newUsername: string) {
+        setUsername(newUsername)
+    }
+
+    function validateUsername(): boolean {
+        if (currentUsername !== "") return true
+        setAlertOpen(true)
+        return false
+    }
 
     function updateMeeting(meeting: Meeting) {
         setMeeting(meeting);
@@ -85,9 +97,8 @@ export default function MeetingScheduler() {
             return
         }
 
-        if (currentUsername === "") {
-            alert("You must be logged in to add an appointment")
-            e.cancel = true;
+        if (!validateUsername()) {
+            e.cancel = true
             return
         }
         const updatedMeeting = await client.addInterval(meetingId, currentUsername, newInterval)
@@ -98,9 +109,8 @@ export default function MeetingScheduler() {
     async function onAppointmentDeleting(e: AppointmentDeletingEvent) {
         console.log("Appointment deleting", e);
         const interval = new Interval((e.appointmentData.startDate as Date).getTime(), (e.appointmentData.endDate as Date).getTime());
-        if (currentUsername === "") {
-            alert("You must be logged in to delete an appointment")
-            e.cancel = true;
+        if (!validateUsername()) {
+            e.cancel = true
             return
         }
         const updatedMeeting = await client.removeIntervals(meetingId, currentUsername, interval)
@@ -110,9 +120,8 @@ export default function MeetingScheduler() {
 
     async function onAppointmentUpdating(e: AppointmentUpdatingEvent) {
         console.log("Appointment updating", e);
-        if (currentUsername === "") {
-            alert("You must be logged in to update an appointment")
-            e.cancel = true;
+        if (!validateUsername()) {
+            e.cancel = true
             return
         }
         const oldInterval = new Interval((e.oldData.startDate as Date).getTime(), (e.oldData.endDate as Date).getTime());
@@ -154,6 +163,10 @@ export default function MeetingScheduler() {
     }
 
     function customizeAppointmentForm(e: AppointmentFormOpeningEvent) {
+        if (!validateUsername()) {
+            e.cancel = true
+            return
+        }
         const form = e.form;
         const mainGroup = form.itemOption('mainGroup');
         let mainGroupItems: any[] = mainGroup.items;
@@ -209,8 +222,8 @@ export default function MeetingScheduler() {
                     size="small"
                     value={currentUsername}
                     onChange={onUsernameChanged}
-                    required={true}
                     error={!currentUsername}
+                    margin="dense"
                 />
             </div>
             <div className="wrapper">
@@ -258,6 +271,12 @@ export default function MeetingScheduler() {
                     <Intersections intervals={meeting.intersections}/>
                 </div>
             </div>
+
+            <UsernameAlert
+                alertOpen={alertOpen}
+                setAlertOpen={(newAlertState) => setAlertOpen(newAlertState)}
+                onSave={handleSaveAlert}
+            />
         </>
     )
 }
