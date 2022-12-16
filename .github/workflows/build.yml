@@ -46,7 +46,7 @@ jobs:
           ./mvnw -B package docker:build docker:push
 
       - name: Upload test coverage to Codecov
-        uses: codecov/codecov-action@v3.1.0
+        uses: codecov/codecov-action@v3.1.1
         with:
           file: ./target/site/jacoco/jacoco.xml
 
