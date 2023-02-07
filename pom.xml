@@ -18,7 +18,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <docker-maven-plugin.version>0.40.2</docker-maven-plugin.version>
+        <docker-maven-plugin.version>0.41.0</docker-maven-plugin.version>
         <jacoco.plugin.version>0.8.8</jacoco.plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <testcontainers.version>1.17.5</testcontainers.version>
